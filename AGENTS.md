@@ -75,6 +75,26 @@ These rules are **supplemental** to this file. When your task touches the topic,
 
 ---
 
+## Cursor slash commands
+
+Reusable **Agent prompts** live in [.cursor/commands/](.cursor/commands/) as Markdown files. In Cursor, type **`/`** in Agent chat and choose a command by name. They are adapted for this repo (Gradle, Spotless + Detekt, Decompose, `BrandConfig`).
+
+| Command | Role |
+|---------|------|
+| `architect` | One structural / clean-architecture fix per run |
+| `bolt` | One performance improvement |
+| `bumper` | Dependency version bumps in the version catalog |
+| `claude` | Deep read–reason–implement workflow |
+| `doc` | One KDoc improvement |
+| `linter` | Spotless + Detekt + style consistency |
+| `palette` | UX and accessibility |
+| `sentinel` | Security fix or hardening |
+| `tutor` | One test-suite addition |
+
+Several commands mention optional run journals under `.cursor/journals/` (create on first use). Product details: [Cursor slash commands](https://cursor.com/docs/cli/reference/slash-commands).
+
+---
+
 ## Further documentation
 
 - [docs/jj-version-control.md](docs/jj-version-control.md) — Jujutsu (`jj`) usage: install, clone, daily commands, Git remote sync.
@@ -87,6 +107,7 @@ These rules are **supplemental** to this file. When your task touches the topic,
 ## Extending agent guidance
 
 - **Repository-specific** — Add or edit [.cursor/rules/](.cursor/rules/) (`.mdc` with YAML frontmatter: `description`, `globs`, `alwaysApply` as needed). Keep narrow scope per rule.
+- **Slash commands** — Add or edit Markdown files in [.cursor/commands/](.cursor/commands/); use YAML frontmatter `description:` for the menu subtitle. Prefer one focused workflow per file.
 - **Editor and personal workflows** — Use Cursor **Skills** from your skills library when authoring new rules or skills, or when changing editor settings (e.g. “Create Cursor rules”, “Create Skill”, “Modify Cursor settings” skills if installed). Repo skills: [.cursor/skills/jujutsu-vcs/SKILL.md](.cursor/skills/jujutsu-vcs/SKILL.md) (jj), [.cursor/skills/gradle-lint/SKILL.md](.cursor/skills/gradle-lint/SKILL.md) (Spotless + Detekt).
 
-For product behavior of AGENTS.md and `.cursor/rules` in Cursor itself, see [Cursor documentation](https://cursor.com/docs).
+For product behavior of AGENTS.md, `.cursor/rules`, and custom commands in Cursor, see [Cursor documentation](https://cursor.com/docs).

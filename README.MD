@@ -6,6 +6,10 @@ A Kotlin Multiplatform demo showing how a single shared codebase can produce mul
 
 Day-to-day history for this repository is managed with **[Jujutsu](https://jj-vcs.dev/)** (`jj`); pushes and CI still use **Git** (see `.github/workflows/`). Commands, clone/init, and remote sync are documented in [docs/jj-version-control.md](docs/jj-version-control.md).
 
+## Cursor IDE
+
+Version-controlled **Agent slash commands** for this repo live under [.cursor/commands/](.cursor/commands/). Each file is one command (for example `architect`, `tutor`, `linter`); in Cursor Agent chat, type **`/`** to pick them. Conventions, Cursor rules, and skills are summarized in [AGENTS.md](AGENTS.md).
+
 ## Project Structure
 
 ```
