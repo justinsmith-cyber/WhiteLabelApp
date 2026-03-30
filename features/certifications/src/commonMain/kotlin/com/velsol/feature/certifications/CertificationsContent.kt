@@ -40,11 +40,9 @@ fun CertificationsContent(
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
-    val certs by component.certs.collectAsState()
-    val isLoading by component.isLoading.collectAsState()
-    val activeCount = certs.count { it.status == CertStatus.Active }
+    val state by component.state.collectAsState()
 
-    if (isLoading && certs === mockCertifications) {
+    if (state.isLoading && state.certs === mockCertifications) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(color = primary)
         }
@@ -78,19 +76,19 @@ fun CertificationsContent(
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "$activeCount active · ${certs.size} total",
+                        text = "${state.activeCount} active · ${state.certs.size} total",
                         color = onPrimary.copy(alpha = 0.82f),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(16.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatChip(
-                            label = "$activeCount Active",
+                            label = "${state.activeCount} Active",
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
                         StatChip(
-                            label = "${certs.count { it.status == CertStatus.Expiring }} Expiring",
+                            label = "${state.expiringCount} Expiring",
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
@@ -108,7 +106,7 @@ fun CertificationsContent(
             )
         }
 
-        items(certs) { cert ->
+        items(state.certs) { cert ->
             CertificationCard(
                 cert = cert,
                 secondary = secondary,

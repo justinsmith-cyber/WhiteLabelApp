@@ -9,6 +9,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DefaultCertListComponent(
@@ -22,11 +24,15 @@ class DefaultCertListComponent(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val repository = CertificationsRepository(httpClient, apiBaseUrl)
 
-    private val _certs = MutableStateFlow<List<CertRecord>>(mockCertifications)
-    override val certs: StateFlow<List<CertRecord>> = _certs
-
-    private val _isLoading = MutableStateFlow(false)
-    override val isLoading: StateFlow<Boolean> = _isLoading
+    private val _state = MutableStateFlow(
+        CertListState(
+            certs = mockCertifications,
+            isLoading = false,
+            activeCount = mockCertifications.count { it.status == CertStatus.Active },
+            expiringCount = mockCertifications.count { it.status == CertStatus.Expiring },
+        )
+    )
+    override val state: StateFlow<CertListState> = _state.asStateFlow()
 
     init {
         lifecycle.doOnDestroy { scope.cancel() }
@@ -35,9 +41,16 @@ class DefaultCertListComponent(
 
     private fun loadCertifications() {
         scope.launch {
-            _isLoading.value = true
-            _certs.value = repository.getCertifications()
-            _isLoading.value = false
+            _state.update { it.copy(isLoading = true) }
+            val loadedCerts = repository.getCertifications()
+            _state.update {
+                it.copy(
+                    certs = loadedCerts,
+                    isLoading = false,
+                    activeCount = loadedCerts.count { cert -> cert.status == CertStatus.Active },
+                    expiringCount = loadedCerts.count { cert -> cert.status == CertStatus.Expiring },
+                )
+            }
         }
     }
 
