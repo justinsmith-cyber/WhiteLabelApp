@@ -115,8 +115,8 @@ class BrandConfigContractTest {
     fun differs_when_hasHvacCertifications_changes() {
         assertFalse(
             base.sameBrandContentAs(
-                base.copy(features = FeatureToggles(hasHvacCertifications = true))
-            )
+                base.copy(features = FeatureToggles(hasHvacCertifications = true)),
+            ),
         )
     }
 
@@ -124,8 +124,8 @@ class BrandConfigContractTest {
     fun differs_when_hasPlumbingInventory_changes() {
         assertFalse(
             base.sameBrandContentAs(
-                base.copy(features = FeatureToggles(hasPlumbingInventory = true))
-            )
+                base.copy(features = FeatureToggles(hasPlumbingInventory = true)),
+            ),
         )
     }
 }

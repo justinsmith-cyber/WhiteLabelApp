@@ -12,16 +12,17 @@ Day-to-day history for this repository is managed with **[Jujutsu](https://jj-vc
 WhiteLabelApp/
 ├── .github/
 │   └── workflows/
-│       └── build-clients.yml       # Matrix CI: builds every client flavor for Android + Desktop
+│       └── build-clients.yml       # lint (Spotless + Detekt) + matrix builds: Android, Desktop, iOS per client
 ├── build-logic/                    # Convention plugins (shared Gradle config)
 │   ├── build.gradle.kts
 │   ├── settings.gradle.kts
 │   └── src/main/kotlin/
-│       ├── whitelabel.kmp.library.gradle.kts   # KMP targets + Android SDK config
+│       ├── whitelabel.kmp.library.gradle.kts   # KMP targets + Android SDK config + Detekt
 │       ├── whitelabel.kmp.compose.gradle.kts   # Compose MP + Decompose + all common Compose deps
 │       ├── whitelabel.kmp.database.gradle.kts  # Room runtime + KSP compiler
 │       ├── whitelabel.kmp.network.gradle.kts   # Ktor client + platform engines + serialization
-│       └── whitelabel.android.library.gradle.kts  # Android-only library preset
+│       ├── whitelabel.android.library.gradle.kts  # Android-only library preset + Detekt
+│       └── whitelabel.detekt.gradle.kts        # Detekt 2.x + compose-rules; KMP source roots
 ├── gradle/
 │   └── libs.versions.toml          # Single source of truth for all versions
 ├── core/
@@ -53,7 +54,7 @@ WhiteLabelApp/
 │       │   │   ├── DefaultRootComponent.kt    # ChildStack (Home) + tab children (Certifications, Inventory)
 │       │   │   └── RootContent.kt             # Scaffold + NavigationBar + per-tab Children composable
 │       │   └── theme/              # AppTheme (brand-aware Material3 colors), LocalBrandConfig, LocalThemeIsDark
-│       └── iosMain/kotlin/main.kt  # MainViewController — creates DefaultRootComponent; holds mutable BrandConfig state
+│       └── iosMain/kotlin/Main.kt  # MainViewController — creates DefaultRootComponent; holds mutable BrandConfig state
 ├── androidApp/                     # Android application shell
 ├── desktopApp/                     # Desktop (JVM) application shell
 └── iosApp/                         # iOS application shell (Xcode)
@@ -229,7 +230,7 @@ The demo switcher lets stakeholders change the entire brand — colors, name, lo
 - `demo-brands/.../DemoBrandConfigs.kt` — `allDemoConfigs`: four self-contained inline `object` implementations of `BrandConfig`, one per client persona.
 - `sharedUI/.../demo/DemoClientSwitcher.kt` — `ModalBottomSheet` that lists all configs as tappable cards showing the brand name, tagline, and a three-dot color swatch.
 
-All three platform entry points (`AppActivity`, `main.kt`, `MainViewController`) hold `var brandConfig by mutableStateOf(appBrandConfig())`. Selecting a config from the sheet calls `onBrandSelected(config)`, updating the state and triggering a full recomposition of `AppTheme`, including colors, logo, and which tabs are visible.
+All three platform entry points (`AppActivity`, desktop `Main.kt`, iOS `MainViewController`) hold `var brandConfig by mutableStateOf(appBrandConfig())`. Selecting a config from the sheet calls `onBrandSelect(config)`, updating the state and triggering a full recomposition of `AppTheme`, including colors, logo, and which tabs are visible.
 
 ---
 
@@ -367,16 +368,29 @@ buildkonfig {
 
 ---
 
-## CI — Building All Client Flavors
+## CI — Lint and client matrix builds
 
-`.github/workflows/build-clients.yml` runs three matrix jobs (`build-android`, `build-desktop`, `build-ios`) for every entry in the `client` list:
+`.github/workflows/build-clients.yml` runs a **`lint`** job first, then matrix jobs **`build-android`**, **`build-desktop`**, and **`build-ios`**.
+
+### Lint
+
+```bash
+./gradlew spotlessCheck detekt --continue
+./gradlew spotlessApply   # optional: apply ktlint formatting
+```
+
+**Spotless** (root `build.gradle.kts`) runs **ktlint** with [compose-rules](https://mrmans0n.github.io/compose-rules/ktlint/) on Kotlin sources and Gradle Kotlin DSL scripts; **`.editorconfig`** carries shared ktlint settings. **Detekt** 2.x (`dev.detekt`) reads **`config/detekt/detekt.yml`** and loads compose-rules as a Detekt plugin; subprojects use **`whitelabel.detekt`** from build-logic. Versions live in **`gradle/libs.versions.toml`**.
+
+### Client matrix
+
+Matrix excerpt (see the workflow file for the canonical list):
 
 ```yaml
 matrix:
-  client: [default, acme, beta, gamma]
+  client: [default, acme, beta]
 ```
 
-Each job uploads its artifact under `{client}-android-apk`, `{client}-desktop`, or `{client}-ios-framework`.
+Each matrix job uploads its artifact under `{client}-android-apk`, `{client}-desktop`, or `{client}-ios-framework`.
 
 ---
 
@@ -389,6 +403,9 @@ Each job uploads its artifact under `{client}-android-apk`, `{client}-desktop`, 
 | `whitelabel.kmp.database` | (inherits kmp.library) | Room runtime, KSP Room compiler, `schemaDirectory` |
 | `whitelabel.kmp.network` | (inherits kmp.library) | Ktor core (api), platform engines, kotlinx-serialization |
 | `whitelabel.android.library` | Android only | kotlin.android, JVM 17, compileSdk 36, minSdk 23 |
+| `whitelabel.detekt` | (applied by kmp.library / android.library, or shell modules) | Detekt 2.x + compose-rules; shared `config/detekt/detekt.yml` |
+
+**Root `build.gradle.kts`:** **Spotless** (not in the table above) formats Kotlin and `*.kts` build scripts with ktlint + compose-rules.
 
 To change SDK versions or add a universal Compose dependency, edit the relevant file in `build-logic/src/main/kotlin/` — the change propagates to every module automatically.
 
@@ -414,6 +431,8 @@ To add a new demo client, add a new `BrandConfig` object in `demo-brands/src/com
 ---
 
 ## Running the App
+
+Use `./gradlew spotlessCheck detekt --continue` for the same lint pipeline as CI; `./gradlew spotlessApply` applies ktlint formatting.
 
 ### Android
 Open the project in Android Studio and run the imported Android run configuration, or:

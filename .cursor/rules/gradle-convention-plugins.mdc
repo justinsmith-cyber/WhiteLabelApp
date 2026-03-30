@@ -17,6 +17,9 @@ This project uses `build-logic` precompiled script plugins. **Never duplicate KM
 | `whitelabel.kmp.database` | Applies `kmp.library` + Room runtime, KSP compiler, `schemaDirectory` config |
 | `whitelabel.kmp.network` | Applies `kmp.library` + Ktor client (platform engines), kotlinx-serialization |
 | `whitelabel.android.library` | Android-only library, `kotlin.android`, JVM 17 |
+| `whitelabel.detekt` | **Detekt 2.x** (`dev.detekt`): shared `config/detekt/detekt.yml`, compose-rules plugin, KMP-aware `source` roots; apply **after** Kotlin/Android plugins in the same `plugins { }` block |
+
+**Root project only:** **Spotless** (`com.diffplug.spotless` in root `build.gradle.kts`) formats all `*.kt` / `*.kts` with ktlint + compose-rules; not a convention plugin.
 
 ## Module Templates
 
@@ -76,3 +79,5 @@ android { namespace = "com.velsol.core.util" }
 - To change SDK versions or JVM targets globally, edit `build-logic/src/main/kotlin/whitelabel.kmp.library.gradle.kts`.
 - To add a new shared Compose dependency, add it to `whitelabel.kmp.compose.gradle.kts`, not to individual modules.
 - New Gradle plugin JARs needed by convention plugins must be added as `compileOnly` deps in `build-logic/build.gradle.kts` and as library entries (not plugin aliases) in `gradle/libs.versions.toml`.
+- **`whitelabel.detekt`** is applied inside `whitelabel.kmp.library` and `whitelabel.android.library` (after Kotlin/Android). **Shell apps** (`androidApp`, `desktopApp`) and **JVM-only** modules (`brand-parity-tests`) must list **`id("whitelabel.detekt")` last** so Detekt’s Android integration does not run before the Kotlin Android target exists.
+- Do not use **`detekt-formatting`**; formatting is **Spotless + ktlint** only.

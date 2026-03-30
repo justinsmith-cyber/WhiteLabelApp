@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:compose:compositionlocal-allowlist")
+
 package com.velsol.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -5,7 +7,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.velsol.core.domain.brand.BrandConfig
 
@@ -18,8 +26,8 @@ internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
 @Composable
 internal fun AppTheme(
     brandConfig: BrandConfig,
-    onThemeChanged: @Composable (isDark: Boolean) -> Unit,
-    content: @Composable () -> Unit
+    onThemeChange: @Composable (isDark: Boolean) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
@@ -111,10 +119,10 @@ internal fun AppTheme(
         LocalBrandConfig provides brandConfig,
     ) {
         val isDark by isDarkState
-        onThemeChanged(isDark)
+        onThemeChange(isDark)
         MaterialTheme(
             colorScheme = if (isDark) darkColorScheme else lightColorScheme,
-            content = { Surface(content = content) }
+            content = { Surface(content = content) },
         )
     }
 }

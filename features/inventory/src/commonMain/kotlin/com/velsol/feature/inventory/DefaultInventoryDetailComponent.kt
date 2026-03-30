@@ -6,7 +6,8 @@ class DefaultInventoryDetailComponent(
     componentContext: ComponentContext,
     override val itemSku: String,
     private val onBackCallback: () -> Unit,
-) : InventoryDetailComponent, ComponentContext by componentContext {
+) : InventoryDetailComponent,
+    ComponentContext by componentContext {
 
     override fun onBack() {
         onBackCallback()

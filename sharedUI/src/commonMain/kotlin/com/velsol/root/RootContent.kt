@@ -26,11 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.velsol.core.domain.brand.BrandConfig
 import com.velsol.core.domain.brand.FeatureToggles
 import com.velsol.demo.DemoClientSwitcher
@@ -57,8 +57,8 @@ private val WideLayoutBreakpoint = 900.dp
 @Composable
 fun RootContent(
     component: RootComponent,
-    onBrandSelected: (BrandConfig) -> Unit = {},
-    modifier: Modifier = Modifier
+    onBrandSelect: (BrandConfig) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     val stack by component.stack.subscribeAsState()
     var isDark by LocalThemeIsDark.current
@@ -78,7 +78,7 @@ fun RootContent(
             if (useSideNavigation) {
                 AppNavigationRail(
                     selectedTab = selectedTab,
-                    onTabSelected = { selectedTab = it },
+                    onSelectTab = { selectedTab = it },
                     features = features,
                     primary = primary,
                     modifier = Modifier.fillMaxHeight(),
@@ -91,12 +91,12 @@ fun RootContent(
                     if (hasAnyFeature && !useSideNavigation) {
                         AppNavigationBar(
                             selectedTab = selectedTab,
-                            onTabSelected = { selectedTab = it },
+                            onSelectTab = { selectedTab = it },
                             features = features,
                             primary = primary,
                         )
                     }
-                }
+                },
             ) { innerPadding ->
                 RootTabScenes(
                     selectedTab = selectedTab,
@@ -116,10 +116,10 @@ fun RootContent(
     if (showSwitcher) {
         DemoClientSwitcher(
             onDismiss = { showSwitcher = false },
-            onBrandSelected = { config ->
-                onBrandSelected(config)
+            onBrandSelect = { config ->
+                onBrandSelect(config)
                 selectedTab = Tab.Home
-            }
+            },
         )
     }
 }
@@ -127,7 +127,7 @@ fun RootContent(
 @Composable
 private fun AppNavigationBar(
     selectedTab: Tab,
-    onTabSelected: (Tab) -> Unit,
+    onSelectTab: (Tab) -> Unit,
     features: FeatureToggles,
     primary: Color,
 ) {
@@ -139,13 +139,13 @@ private fun AppNavigationBar(
     NavigationBar {
         NavigationBarItem(
             selected = selectedTab == Tab.Home,
-            onClick = { onTabSelected(Tab.Home) },
+            onClick = { onSelectTab(Tab.Home) },
             icon = {
                 TabIcon(
                     iconRes = Res.drawable.ic_tab_home,
                     label = "Home",
                     isSelected = selectedTab == Tab.Home,
-                    color = primary
+                    color = primary,
                 )
             },
             label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
@@ -154,13 +154,13 @@ private fun AppNavigationBar(
         if (features.hasHvacCertifications) {
             NavigationBarItem(
                 selected = selectedTab == Tab.Certifications,
-                onClick = { onTabSelected(Tab.Certifications) },
+                onClick = { onSelectTab(Tab.Certifications) },
                 icon = {
                     TabIcon(
                         iconRes = Res.drawable.ic_tab_certifications,
                         label = "Certifications",
                         isSelected = selectedTab == Tab.Certifications,
-                        color = primary
+                        color = primary,
                     )
                 },
                 label = { Text("Certifications", style = MaterialTheme.typography.labelSmall) },
@@ -170,13 +170,13 @@ private fun AppNavigationBar(
         if (features.hasPlumbingInventory) {
             NavigationBarItem(
                 selected = selectedTab == Tab.Inventory,
-                onClick = { onTabSelected(Tab.Inventory) },
+                onClick = { onSelectTab(Tab.Inventory) },
                 icon = {
                     TabIcon(
                         iconRes = Res.drawable.ic_tab_inventory,
                         label = "Inventory",
                         isSelected = selectedTab == Tab.Inventory,
-                        color = primary
+                        color = primary,
                     )
                 },
                 label = { Text("Inventory", style = MaterialTheme.typography.labelSmall) },
@@ -189,7 +189,7 @@ private fun AppNavigationBar(
 @Composable
 private fun AppNavigationRail(
     selectedTab: Tab,
-    onTabSelected: (Tab) -> Unit,
+    onSelectTab: (Tab) -> Unit,
     features: FeatureToggles,
     primary: Color,
     modifier: Modifier = Modifier,
@@ -205,13 +205,13 @@ private fun AppNavigationRail(
     ) {
         NavigationRailItem(
             selected = selectedTab == Tab.Home,
-            onClick = { onTabSelected(Tab.Home) },
+            onClick = { onSelectTab(Tab.Home) },
             icon = {
                 TabIcon(
                     iconRes = Res.drawable.ic_tab_home,
                     label = "Home",
                     isSelected = selectedTab == Tab.Home,
-                    color = primary
+                    color = primary,
                 )
             },
             label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
@@ -220,13 +220,13 @@ private fun AppNavigationRail(
         if (features.hasHvacCertifications) {
             NavigationRailItem(
                 selected = selectedTab == Tab.Certifications,
-                onClick = { onTabSelected(Tab.Certifications) },
+                onClick = { onSelectTab(Tab.Certifications) },
                 icon = {
                     TabIcon(
                         iconRes = Res.drawable.ic_tab_certifications,
                         label = "Certifications",
                         isSelected = selectedTab == Tab.Certifications,
-                        color = primary
+                        color = primary,
                     )
                 },
                 label = { Text("Certifications", style = MaterialTheme.typography.labelSmall) },
@@ -236,13 +236,13 @@ private fun AppNavigationRail(
         if (features.hasPlumbingInventory) {
             NavigationRailItem(
                 selected = selectedTab == Tab.Inventory,
-                onClick = { onTabSelected(Tab.Inventory) },
+                onClick = { onSelectTab(Tab.Inventory) },
                 icon = {
                     TabIcon(
                         iconRes = Res.drawable.ic_tab_inventory,
                         label = "Inventory",
                         isSelected = selectedTab == Tab.Inventory,
-                        color = primary
+                        color = primary,
                     )
                 },
                 label = { Text("Inventory", style = MaterialTheme.typography.labelSmall) },
@@ -268,7 +268,7 @@ private fun RootTabScenes(
         Tab.Home -> Children(
             stack = stack,
             modifier = modifier,
-            animation = stackAnimation(fade())
+            animation = stackAnimation(fade()),
         ) { child ->
             when (val instance = child.instance) {
                 is RootComponent.Child.HomeChild -> HomeContent(
@@ -287,13 +287,14 @@ private fun RootTabScenes(
             Children(
                 stack = certsStack,
                 modifier = modifier,
-                animation = stackAnimation(fade())
+                animation = stackAnimation(fade()),
             ) { child ->
                 when (val instance = child.instance) {
                     is CertificationsComponent.Child.ListChild -> CertificationsContent(
                         component = instance.component,
                         brandConfig = brandConfig,
                     )
+
                     is CertificationsComponent.Child.DetailChild -> CertificationDetailContent(
                         component = instance.component,
                         brandConfig = brandConfig,
@@ -307,13 +308,14 @@ private fun RootTabScenes(
             Children(
                 stack = inventoryStack,
                 modifier = modifier,
-                animation = stackAnimation(fade())
+                animation = stackAnimation(fade()),
             ) { child ->
                 when (val instance = child.instance) {
                     is InventoryComponent.Child.ListChild -> InventoryContent(
                         component = instance.component,
                         brandConfig = brandConfig,
                     )
+
                     is InventoryComponent.Child.DetailChild -> InventoryDetailContent(
                         component = instance.component,
                         brandConfig = brandConfig,
@@ -330,6 +332,6 @@ private fun TabIcon(iconRes: DrawableResource, label: String, isSelected: Boolea
         painter = painterResource(iconRes),
         contentDescription = label,
         modifier = Modifier.size(24.dp),
-        tint = if (isSelected) color else MaterialTheme.colorScheme.onSurfaceVariant
+        tint = if (isSelected) color else MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }

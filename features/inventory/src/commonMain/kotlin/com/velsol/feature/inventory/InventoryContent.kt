@@ -31,7 +31,7 @@ import com.velsol.core.domain.brand.BrandConfig
 fun InventoryContent(
     component: InventoryListComponent,
     brandConfig: BrandConfig,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
@@ -42,45 +42,45 @@ fun InventoryContent(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = primary)
+                colors = CardDefaults.cardColors(containerColor = primary),
             ) {
                 Column(Modifier.padding(24.dp)) {
                     Text(
                         text = "PLUMBING INVENTORY",
                         color = onPrimary.copy(alpha = 0.65f),
                         style = MaterialTheme.typography.labelSmall,
-                        letterSpacing = 2.sp
+                        letterSpacing = 2.sp,
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
                         text = "Parts & Materials",
                         color = onPrimary,
                         style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = "${mockInventory.size} items tracked",
                         color = onPrimary.copy(alpha = 0.82f),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(16.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatBadge(
                             label = "$inStockCount In Stock",
                             containerColor = onPrimary.copy(alpha = 0.18f),
-                            contentColor = onPrimary
+                            contentColor = onPrimary,
                         )
                         StatBadge(
                             label = "$lowCount Low Stock",
                             containerColor = onPrimary.copy(alpha = 0.18f),
-                            contentColor = onPrimary
+                            contentColor = onPrimary,
                         )
                     }
                 }
@@ -92,7 +92,7 @@ fun InventoryContent(
                 text = "Stock Levels",
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 4.dp)
+                modifier = Modifier.padding(horizontal = 4.dp),
             )
         }
 
@@ -101,7 +101,7 @@ fun InventoryContent(
                 item = item,
                 primary = primary,
                 secondary = secondary,
-                onClick = { component.onItemSelected(item.sku) }
+                onClick = { component.onItemSelected(item.sku) },
             )
         }
     }
@@ -114,7 +114,7 @@ private fun StatBadge(label: String, containerColor: Color, contentColor: Color)
             text = label,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
             style = MaterialTheme.typography.labelMedium,
-            color = contentColor
+            color = contentColor,
         )
     }
 }
@@ -124,7 +124,7 @@ private fun InventoryCard(
     item: InventoryItem,
     primary: Color,
     secondary: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val (statusColor, statusLabel) = when (item.stockLevel) {
         StockLevel.InStock -> secondary to "In Stock"
@@ -141,54 +141,55 @@ private fun InventoryCard(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.Top,
             ) {
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
                     Text(
                         text = item.name,
                         style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
                     )
                     Text(
                         text = item.category,
                         style = MaterialTheme.typography.bodySmall,
-                        color = primary.copy(alpha = 0.8f)
+                        color = primary.copy(alpha = 0.8f),
                     )
                 }
                 Surface(
                     shape = RoundedCornerShape(50),
-                    color = statusColor.copy(alpha = 0.12f)
+                    color = statusColor.copy(alpha = 0.12f),
                 ) {
                     Text(
                         text = statusLabel,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = statusColor,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
                     )
                 }
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = "SKU: ${item.sku}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
                     text = "${item.quantity} ${item.unit}",
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (item.stockLevel == StockLevel.OutOfStock)
+                    color = if (item.stockLevel == StockLevel.OutOfStock) {
                         MaterialTheme.colorScheme.error
-                    else
+                    } else {
                         MaterialTheme.colorScheme.onSurface
+                    },
                 )
             }
         }

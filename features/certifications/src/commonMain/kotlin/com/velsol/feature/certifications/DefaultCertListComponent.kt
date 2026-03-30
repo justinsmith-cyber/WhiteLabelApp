@@ -16,7 +16,8 @@ class DefaultCertListComponent(
     httpClient: HttpClient,
     apiBaseUrl: String,
     private val onCertSelectedCallback: (String) -> Unit,
-) : CertListComponent, ComponentContext by componentContext {
+) : CertListComponent,
+    ComponentContext by componentContext {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val repository = CertificationsRepository(httpClient, apiBaseUrl)

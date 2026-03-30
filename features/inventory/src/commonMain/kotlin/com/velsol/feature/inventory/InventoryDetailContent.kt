@@ -31,7 +31,7 @@ import com.velsol.core.domain.brand.BrandConfig
 fun InventoryDetailContent(
     component: InventoryDetailComponent,
     brandConfig: BrandConfig,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val item = mockInventory.find { it.sku == component.itemSku }
         ?: return
@@ -51,56 +51,56 @@ fun InventoryDetailContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             IconButton(onClick = component::onBack) {
                 Text(
                     text = "←",
                     style = MaterialTheme.typography.titleLarge,
-                    color = primary
+                    color = primary,
                 )
             }
             Text(
                 text = "Item Detail",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
         }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = primary)
+            colors = CardDefaults.cardColors(containerColor = primary),
         ) {
             Column(Modifier.padding(24.dp)) {
                 Text(
                     text = item.category.uppercase(),
                     color = onPrimary.copy(alpha = 0.65f),
                     style = MaterialTheme.typography.labelSmall,
-                    letterSpacing = 2.sp
+                    letterSpacing = 2.sp,
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = item.name,
                     color = onPrimary,
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Spacer(Modifier.height(12.dp))
                 Surface(
                     shape = RoundedCornerShape(50),
-                    color = statusColor.copy(alpha = 0.25f)
+                    color = statusColor.copy(alpha = 0.25f),
                 ) {
                     Text(
                         text = statusLabel,
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelMedium,
                         color = onPrimary,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
@@ -108,11 +108,11 @@ fun InventoryDetailContent(
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 DetailRow(label = "SKU", value = item.sku)
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -123,7 +123,7 @@ fun InventoryDetailContent(
                 DetailRow(
                     label = "Stock Level",
                     value = statusLabel,
-                    valueColor = statusColor
+                    valueColor = statusColor,
                 )
             }
         }
@@ -134,23 +134,23 @@ fun InventoryDetailContent(
 private fun DetailRow(
     label: String,
     value: String,
-    valueColor: Color = MaterialTheme.colorScheme.onSurface
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = valueColor
+            color = valueColor,
         )
     }
 }

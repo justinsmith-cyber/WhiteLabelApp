@@ -17,6 +17,10 @@ kotlinx-datetime = "0.7.1"
 room = "2.8.4"
 ksp = "2.3.6"
 buildKonfig = "0.15.1"
+spotless = "8.4.0"
+detekt = "2.0.0-alpha.2"
+ktlint = "1.8.0"
+composeRules = "0.5.6"
 
 [libraries]
 
@@ -61,6 +65,8 @@ build-plugin-compose-compiler = { module = "org.jetbrains.kotlin:compose-compile
 build-plugin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 build-plugin-room = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 build-plugin-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+build-plugin-detekt = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+compose-rules-detekt = { module = "io.nlopez.compose.rules:detekt", version.ref = "composeRules" }
 
 [plugins]
 
@@ -76,3 +82,5 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }

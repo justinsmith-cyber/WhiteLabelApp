@@ -1,0 +1,55 @@
+---
+description: Spotless (ktlint + compose-rules) and Detekt 2.x setup, config locations, and Gradle conventions for WhiteLabelApp
+globs:
+  - "**/build.gradle.kts"
+  - "gradle/libs.versions.toml"
+  - "config/detekt/**"
+  - ".editorconfig"
+  - ".github/workflows/*.yml"
+alwaysApply: false
+---
+
+# Linting — Spotless and Detekt
+
+## Responsibilities
+
+- **Spotless** (root only): formatting + ktlint lints via **`com.diffplug.spotless`**. Uses pinned **ktlint** and **`io.nlopez.compose.rules:ktlint`** (`customRuleSets`). Targets all `**/*.kt` and `**/*.kts` under the repo with excludes for `**/build/**`, **`**/bin/**`** (generated Kotlin), and `.gradle`.
+- **Detekt** (**`dev.detekt`** 2.x, not `io.gitlab.arturbosch.detekt`): static analysis. Shared config: **`config/detekt/detekt.yml`**. Compose-specific rules from **`io.nlopez.compose.rules:detekt`** (`detektPlugins`).
+
+## Where things live
+
+| Item | Location |
+|------|----------|
+| Spotless + plugin resolution | Root `build.gradle.kts` (`SpotlessExtension`, `alias(libs.plugins.spotless)`, `alias(libs.plugins.detekt).apply(false)`) |
+| Versions | `gradle/libs.versions.toml` — `spotless`, `detekt`, `ktlint`, `composeRules`, plugins, `build-plugin-detekt`, `compose-rules-detekt` |
+| ktlint / compose editor defaults | **`.editorconfig`** (root) |
+| Detekt YAML | **`config/detekt/detekt.yml`** |
+| Convention plugin | **`build-logic/.../whitelabel.detekt.gradle.kts`** — applies `dev.detekt`, sets `config`, `source` roots for KMP (`commonMain`, `jvmMain`, `iosMain`, …), `detektPlugins` |
+| build-logic classpath | `build-logic/build.gradle.kts` — `compileOnly(libs.build.plugin.detekt)` |
+
+## Applying Detekt in modules
+
+- **`whitelabel.kmp.library`** and **`whitelabel.android.library`** already apply **`id("whitelabel.detekt")` after** Kotlin/Android plugins (order matters for Android).
+- **Shell / JVM-only** modules that do not use those conventions: add **`id("whitelabel.detekt")` last** in `plugins { }` (e.g. `androidApp`, `desktopApp`, `brand-parity-tests`).
+
+Do **not** add `detekt-formatting` (would duplicate ktlint vs Spotless).
+
+## Commands
+
+```bash
+./gradlew spotlessCheck          # verify formatting + ktlint lints
+./gradlew spotlessApply          # auto-fix formatting
+./gradlew detekt --continue      # all subprojects; continue after failures
+./gradlew spotlessCheck detekt --continue   # same as CI lint job
+```
+
+## CI
+
+[`.github/workflows/build-clients.yml`](../../.github/workflows/build-clients.yml) includes a **`lint`** job that runs `spotlessCheck` and `detekt`.
+
+## References
+
+- [compose-rules — ktlint](https://mrmans0n.github.io/compose-rules/ktlint/)
+- [compose-rules — detekt](https://mrmans0n.github.io/compose-rules/detekt/)
+- [Detekt — Compose configuration](https://detekt.dev/docs/introduction/compose/)
+- [Spotless Gradle README](https://github.com/diffplug/spotless/blob/main/plugin-gradle/README.md)

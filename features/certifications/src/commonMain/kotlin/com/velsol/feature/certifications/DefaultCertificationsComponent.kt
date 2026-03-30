@@ -14,7 +14,8 @@ class DefaultCertificationsComponent(
     componentContext: ComponentContext,
     private val httpClient: HttpClient,
     private val apiBaseUrl: String,
-) : CertificationsComponent, ComponentContext by componentContext {
+) : CertificationsComponent,
+    ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -36,14 +37,15 @@ class DefaultCertificationsComponent(
                 httpClient = httpClient,
                 apiBaseUrl = apiBaseUrl,
                 onCertSelectedCallback = { name -> navigation.push(Config.Detail(name)) },
-            )
+            ),
         )
+
         is Config.Detail -> CertificationsComponent.Child.DetailChild(
             DefaultCertDetailComponent(
                 componentContext = context,
                 certName = config.certName,
                 onBackCallback = { navigation.pop() },
-            )
+            ),
         )
     }
 

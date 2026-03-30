@@ -8,11 +8,9 @@ internal class CertificationsRepository(
 ) {
     private val networkDataSource = CertificationsNetworkDataSource(httpClient, apiBaseUrl)
 
-    suspend fun getCertifications(): List<CertRecord> {
-        return try {
-            networkDataSource.fetchCertifications().takeIf { it.isNotEmpty() } ?: mockCertifications
-        } catch (_: Exception) {
-            mockCertifications
-        }
+    suspend fun getCertifications(): List<CertRecord> = try {
+        networkDataSource.fetchCertifications().takeIf { it.isNotEmpty() } ?: mockCertifications
+    } catch (_: Exception) {
+        mockCertifications
     }
 }

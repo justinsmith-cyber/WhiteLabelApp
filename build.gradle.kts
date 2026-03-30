@@ -1,3 +1,5 @@
+import com.diffplug.gradle.spotless.SpotlessExtension
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform).apply(false)
     alias(libs.plugins.compose.compiler).apply(false)
@@ -11,4 +13,37 @@ plugins {
     alias(libs.plugins.room).apply(false)
     alias(libs.plugins.ksp).apply(false)
     alias(libs.plugins.buildKonfig).apply(false)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.detekt).apply(false)
+}
+
+val ktlintVersion = libs.versions.ktlint.get()
+val composeRulesVersion = libs.versions.composeRules.get()
+val composeRulesKtlint = "io.nlopez.compose.rules:ktlint:$composeRulesVersion"
+
+configure<SpotlessExtension> {
+    kotlin {
+        target("**/*.kt")
+        targetExclude(
+            "**/build/**",
+            "**/bin/**",
+            "**/.gradle/**",
+            ".gradle/**",
+        )
+        ktlint(ktlintVersion)
+            .setEditorConfigPath(rootProject.file(".editorconfig"))
+            .customRuleSets(listOf(composeRulesKtlint))
+    }
+    kotlinGradle {
+        target("**/*.kts")
+        targetExclude(
+            "**/build/**",
+            "**/bin/**",
+            "**/.gradle/**",
+            ".gradle/**",
+        )
+        ktlint(ktlintVersion)
+            .setEditorConfigPath(rootProject.file(".editorconfig"))
+            .customRuleSets(listOf(composeRulesKtlint))
+    }
 }

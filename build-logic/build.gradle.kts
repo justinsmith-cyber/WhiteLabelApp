@@ -10,4 +10,5 @@ dependencies {
     compileOnly(libs.build.plugin.serialization)
     compileOnly(libs.build.plugin.room)
     compileOnly(libs.build.plugin.ksp)
+    compileOnly(libs.build.plugin.detekt)
 }

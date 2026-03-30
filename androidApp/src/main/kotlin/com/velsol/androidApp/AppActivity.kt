@@ -31,7 +31,7 @@ class AppActivity : ComponentActivity() {
                 rootComponent = root,
                 brandConfig = brandConfig,
                 onBrandSelected = { brandConfig = it },
-                onThemeChanged = { ThemeChanged(it) },
+                onThemeChange = { ThemeChanged(it) },
             )
         }
     }

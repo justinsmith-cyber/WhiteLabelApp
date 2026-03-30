@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DemoClientSwitcher(
     onDismiss: () -> Unit,
-    onBrandSelected: (BrandConfig) -> Unit,
+    onBrandSelect: (BrandConfig) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -49,13 +49,13 @@ fun DemoClientSwitcher(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = "Switch Client",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 4.dp)
+                modifier = Modifier.padding(bottom = 4.dp),
             )
             Text(
                 text = "Select a client to preview their brand",
@@ -69,10 +69,10 @@ fun DemoClientSwitcher(
                     onClick = {
                         scope.launch {
                             sheetState.hide()
-                            onBrandSelected(config)
+                            onBrandSelect(config)
                             onDismiss()
                         }
-                    }
+                    },
                 )
             }
         }
@@ -90,45 +90,45 @@ private fun ClientConfigCard(config: BrandConfig, onClick: () -> Unit) {
         shape = RoundedCornerShape(16.dp),
         onClick = onClick,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(primary),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = config.appName.take(2).uppercase(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(config.onPrimaryColorArgb)
+                    color = Color(config.onPrimaryColorArgb),
                 )
             }
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     text = config.appName,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
                 Text(
                     text = config.tagline,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
                     text = "Work item: ${config.taskLabel}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -136,19 +136,19 @@ private fun ClientConfigCard(config: BrandConfig, onClick: () -> Unit) {
                     modifier = Modifier
                         .size(12.dp)
                         .clip(CircleShape)
-                        .background(primary)
+                        .background(primary),
                 )
                 Box(
                     modifier = Modifier
                         .size(12.dp)
                         .clip(CircleShape)
-                        .background(secondary)
+                        .background(secondary),
                 )
                 Box(
                     modifier = Modifier
                         .size(12.dp)
                         .clip(CircleShape)
-                        .background(tertiary)
+                        .background(tertiary),
                 )
             }
         }

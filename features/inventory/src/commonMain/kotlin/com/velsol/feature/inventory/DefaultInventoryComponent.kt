@@ -11,7 +11,8 @@ import kotlinx.serialization.Serializable
 
 class DefaultInventoryComponent(
     componentContext: ComponentContext,
-) : InventoryComponent, ComponentContext by componentContext {
+) : InventoryComponent,
+    ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -31,14 +32,15 @@ class DefaultInventoryComponent(
             DefaultInventoryListComponent(
                 componentContext = context,
                 onItemSelectedCallback = { sku -> navigation.push(Config.Detail(sku)) },
-            )
+            ),
         )
+
         is Config.Detail -> InventoryComponent.Child.DetailChild(
             DefaultInventoryDetailComponent(
                 componentContext = context,
                 itemSku = config.sku,
                 onBackCallback = { navigation.pop() },
-            )
+            ),
         )
     }
 

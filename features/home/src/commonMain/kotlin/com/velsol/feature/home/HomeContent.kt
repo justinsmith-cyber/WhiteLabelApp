@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:compose:lambda-param-in-effect")
+
 package com.velsol.feature.home
 
 import androidx.compose.foundation.background
@@ -13,8 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -42,7 +44,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import coil3.compose.AsyncImage
 import com.velsol.core.domain.brand.BrandConfig
 import com.velsol.core.domain.brand.FeatureToggles
@@ -51,9 +52,11 @@ import com.velsol.feature.home.generated.resources.ic_dark_mode
 import com.velsol.feature.home.generated.resources.ic_light_mode
 import com.velsol.feature.home.generated.resources.open_github
 import com.velsol.feature.home.generated.resources.theme
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
+@Suppress("UnusedParameter")
 @Composable
 fun HomeContent(
     component: HomeComponent,
@@ -62,7 +65,7 @@ fun HomeContent(
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
     onShowDemoSwitcher: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
@@ -74,7 +77,7 @@ fun HomeContent(
             .windowInsetsPadding(WindowInsets.safeDrawing),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             HeroBrandCard(
@@ -92,7 +95,7 @@ fun HomeContent(
         item {
             FeaturesSection(
                 features = brandConfig.features,
-                primary = primary
+                primary = primary,
             )
         }
         item {
@@ -100,19 +103,20 @@ fun HomeContent(
                 supportEmail = brandConfig.supportEmail,
                 apiBaseUrl = brandConfig.apiBaseUrl,
                 primary = primary,
-                secondary = secondary
+                secondary = secondary,
             )
         }
         item {
             ActionsRow(
                 isDark = isDark,
                 onToggleDarkMode = onToggleDarkMode,
-                onOpenGithub = onOpenGithub
+                onOpenGithub = onOpenGithub,
             )
         }
     }
 }
 
+@Suppress("LambdaParameterInRestartableEffect")
 @Composable
 private fun HeroBrandCard(
     appName: String,
@@ -138,29 +142,29 @@ private fun HeroBrandCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = primary)
+        colors = CardDefaults.cardColors(containerColor = primary),
     ) {
         Column(Modifier.padding(28.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Box(
                         modifier = Modifier
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(secondary)
+                            .background(secondary),
                     )
                     Text(
                         text = "WHITELABEL PLATFORM",
                         color = onPrimary.copy(alpha = 0.65f),
                         style = MaterialTheme.typography.labelSmall,
-                        letterSpacing = 2.sp
+                        letterSpacing = 2.sp,
                     )
                 }
                 if (logoUrl.isNotEmpty()) {
@@ -169,7 +173,7 @@ private fun HeroBrandCard(
                         contentDescription = appName,
                         modifier = Modifier
                             .size(44.dp)
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(12.dp)),
                     )
                 }
             }
@@ -180,14 +184,14 @@ private fun HeroBrandCard(
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 42.sp,
-                modifier = Modifier.clickable { tapCount++ }
+                modifier = Modifier.clickable { tapCount++ },
             )
             Spacer(Modifier.height(6.dp))
             Text(
                 text = tagline,
                 color = onPrimary.copy(alpha = 0.82f),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
             )
             Spacer(Modifier.height(10.dp))
             Text(
@@ -198,13 +202,13 @@ private fun HeroBrandCard(
             Spacer(Modifier.height(22.dp))
             Surface(
                 shape = RoundedCornerShape(50),
-                color = onPrimary.copy(alpha = 0.15f)
+                color = onPrimary.copy(alpha = 0.15f),
             ) {
                 Text(
                     text = apiBaseUrl.removePrefix("https://"),
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                     color = onPrimary.copy(alpha = 0.88f),
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
                 )
             }
         }
@@ -215,29 +219,29 @@ private fun HeroBrandCard(
 private fun FeaturesSection(features: FeatureToggles, primary: Color) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             text = "Platform Features",
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 4.dp)
+            modifier = Modifier.padding(horizontal = 4.dp),
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             FeatureTile(
                 modifier = Modifier.weight(1f),
                 label = "HVAC Certifications",
                 isEnabled = features.hasHvacCertifications,
-                activeColor = primary
+                activeColor = primary,
             )
             FeatureTile(
                 modifier = Modifier.weight(1f),
                 label = "Plumbing Inventory",
                 isEnabled = features.hasPlumbingInventory,
-                activeColor = primary
+                activeColor = primary,
             )
         }
     }
@@ -248,17 +252,19 @@ private fun FeatureTile(
     label: String,
     isEnabled: Boolean,
     activeColor: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val containerColor = if (isEnabled)
+    val containerColor = if (isEnabled) {
         activeColor.copy(alpha = 0.12f)
-    else
+    } else {
         MaterialTheme.colorScheme.surfaceVariant
+    }
 
-    val contentColor = if (isEnabled)
+    val contentColor = if (isEnabled) {
         activeColor
-    else
+    } else {
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+    }
 
     val statusText = if (isEnabled) "Active" else "Inactive"
     val indicator = if (isEnabled) "●" else "○"
@@ -266,29 +272,29 @@ private fun FeatureTile(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor)
+        colors = CardDefaults.cardColors(containerColor = containerColor),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = indicator,
                 color = contentColor,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = if (isEnabled) FontWeight.SemiBold else FontWeight.Normal,
-                color = if (isEnabled) contentColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                color = if (isEnabled) contentColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
             )
             Text(
                 text = statusText,
                 style = MaterialTheme.typography.labelSmall,
                 color = contentColor.copy(alpha = 0.75f),
-                letterSpacing = 0.5.sp
+                letterSpacing = 0.5.sp,
             )
         }
     }
@@ -299,20 +305,20 @@ private fun BrandIdentityCard(
     supportEmail: String,
     apiBaseUrl: String,
     primary: Color,
-    secondary: Color
+    secondary: Color,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
                 text = "Brand Identity",
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 ColorSwatch(label = "Primary", color = primary)
@@ -329,19 +335,19 @@ private fun BrandIdentityCard(
 private fun ColorSwatch(label: String, color: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Box(
             modifier = Modifier
                 .size(36.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(color)
+                .background(color),
         )
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
             val hex = remember(color) {
                 val r = (color.red * 255).toInt().coerceIn(0, 255)
@@ -353,7 +359,7 @@ private fun ColorSwatch(label: String, color: Color) {
             Text(
                 text = hex,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -364,17 +370,17 @@ private fun BrandInfoRow(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodySmall,
-            maxLines = 1
+            maxLines = 1,
         )
     }
 }
@@ -383,16 +389,16 @@ private fun BrandInfoRow(label: String, value: String) {
 private fun ActionsRow(
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
-    onOpenGithub: () -> Unit
+    onOpenGithub: () -> Unit,
 ) {
     val themeIcon = if (isDark) Res.drawable.ic_light_mode else Res.drawable.ic_dark_mode
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         ElevatedButton(
             modifier = Modifier.weight(1f),
-            onClick = onToggleDarkMode
+            onClick = onToggleDarkMode,
         ) {
             Icon(vectorResource(themeIcon), contentDescription = null)
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -400,7 +406,7 @@ private fun ActionsRow(
         }
         OutlinedButton(
             modifier = Modifier.weight(1f),
-            onClick = onOpenGithub
+            onClick = onOpenGithub,
         ) {
             Text(stringResource(Res.string.open_github))
         }

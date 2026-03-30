@@ -12,12 +12,13 @@ import com.velsol.theme.AppTheme
 fun App(
     rootComponent: RootComponent,
     brandConfig: BrandConfig,
-    onBrandSelected: (BrandConfig) -> Unit = {},
-    onThemeChanged: @Composable (isDark: Boolean) -> Unit = {}
-) = AppTheme(brandConfig = brandConfig, onThemeChanged = onThemeChanged) {
+    modifier: Modifier = Modifier,
+    onBrandSelect: (BrandConfig) -> Unit = {},
+    onThemeChange: @Composable (isDark: Boolean) -> Unit = {},
+) = AppTheme(brandConfig = brandConfig, onThemeChange = onThemeChange) {
     RootContent(
         component = rootComponent,
-        onBrandSelected = onBrandSelected,
-        modifier = Modifier.fillMaxSize()
+        onBrandSelect = onBrandSelect,
+        modifier = modifier.fillMaxSize(),
     )
 }

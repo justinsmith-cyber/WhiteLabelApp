@@ -6,7 +6,7 @@ data class CertRecord(
     val name: String,
     val technician: String,
     val expires: String,
-    val status: CertStatus
+    val status: CertStatus,
 )
 
 internal val mockCertifications = listOf(

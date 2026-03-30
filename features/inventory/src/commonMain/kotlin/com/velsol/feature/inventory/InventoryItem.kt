@@ -8,7 +8,7 @@ internal data class InventoryItem(
     val quantity: Int,
     val unit: String,
     val category: String,
-    val stockLevel: StockLevel
+    val stockLevel: StockLevel,
 )
 
 internal val mockInventory = listOf(

@@ -32,7 +32,7 @@ import com.velsol.core.domain.brand.BrandConfig
 fun CertificationDetailContent(
     component: CertDetailComponent,
     brandConfig: BrandConfig,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val cert = mockCertifications.find { it.name == component.certName }
         ?: return
@@ -52,56 +52,56 @@ fun CertificationDetailContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             IconButton(onClick = component::onBack) {
                 Text(
                     text = "←",
                     style = MaterialTheme.typography.titleLarge,
-                    color = primary
+                    color = primary,
                 )
             }
             Text(
                 text = "Certification Detail",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
         }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = primary)
+            colors = CardDefaults.cardColors(containerColor = primary),
         ) {
             Column(Modifier.padding(24.dp)) {
                 Text(
                     text = "HVAC CERTIFICATION",
                     color = onPrimary.copy(alpha = 0.65f),
                     style = MaterialTheme.typography.labelSmall,
-                    letterSpacing = 2.sp
+                    letterSpacing = 2.sp,
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = cert.name,
                     color = onPrimary,
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Spacer(Modifier.height(12.dp))
                 Surface(
                     shape = RoundedCornerShape(50),
-                    color = statusColor.copy(alpha = 0.25f)
+                    color = statusColor.copy(alpha = 0.25f),
                 ) {
                     Text(
                         text = statusLabel,
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelMedium,
                         color = onPrimary,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
@@ -109,11 +109,11 @@ fun CertificationDetailContent(
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 DetailRow(label = "Technician", value = cert.technician)
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -122,7 +122,7 @@ fun CertificationDetailContent(
                 DetailRow(
                     label = "Status",
                     value = statusLabel,
-                    valueColor = statusColor
+                    valueColor = statusColor,
                 )
             }
         }
@@ -133,23 +133,23 @@ fun CertificationDetailContent(
 private fun DetailRow(
     label: String,
     value: String,
-    valueColor: Color = MaterialTheme.colorScheme.onSurface
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = valueColor
+            color = valueColor,
         )
     }
 }

@@ -57,7 +57,7 @@ fun main() {
             App(
                 rootComponent = root,
                 brandConfig = brandConfig,
-                onBrandSelected = { brandConfig = it },
+                onBrandSelect = { brandConfig = it },
             )
         }
     }

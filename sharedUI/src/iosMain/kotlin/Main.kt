@@ -16,6 +16,7 @@ import platform.UIKit.UIStatusBarStyleLightContent
 import platform.UIKit.UIViewController
 import platform.UIKit.setStatusBarStyle
 
+@Suppress("FunctionNaming", "ktlint:standard:function-naming")
 fun MainViewController(): UIViewController {
     val lifecycle = LifecycleRegistry()
     val root = DefaultRootComponent(DefaultComponentContext(lifecycle = lifecycle))
@@ -26,8 +27,8 @@ fun MainViewController(): UIViewController {
         App(
             rootComponent = root,
             brandConfig = brandConfig,
-            onBrandSelected = { brandConfig = it },
-            onThemeChanged = { ThemeChanged(it) },
+            onBrandSelect = { brandConfig = it },
+            onThemeChange = { ThemeChanged(it) },
         )
     }
 }
@@ -36,7 +37,7 @@ fun MainViewController(): UIViewController {
 private fun ThemeChanged(isDark: Boolean) {
     LaunchedEffect(isDark) {
         UIApplication.sharedApplication.setStatusBarStyle(
-            if (isDark) UIStatusBarStyleDarkContent else UIStatusBarStyleLightContent
+            if (isDark) UIStatusBarStyleDarkContent else UIStatusBarStyleLightContent,
         )
     }
 }

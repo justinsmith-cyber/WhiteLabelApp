@@ -5,7 +5,8 @@ import com.arkivanov.decompose.ComponentContext
 class DefaultInventoryListComponent(
     componentContext: ComponentContext,
     private val onItemSelectedCallback: (String) -> Unit,
-) : InventoryListComponent, ComponentContext by componentContext {
+) : InventoryListComponent,
+    ComponentContext by componentContext {
 
     override fun onItemSelected(sku: String) {
         onItemSelectedCallback(sku)

@@ -16,9 +16,13 @@ Kotlin Multiplatform white-label demo: one **active client** per Gradle configur
 
 # JVM tests (contract + parity)
 ./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+
+# Formatting + static analysis (matches CI lint job)
+./gradlew spotlessCheck detekt --continue
+./gradlew spotlessApply   # auto-fix Spotless/ktlint formatting
 ```
 
-Clients in this repo: `default`, `acme`, `beta`, `gamma`. CI matrix: [.github/workflows/build-clients.yml](.github/workflows/build-clients.yml).
+Clients in this repo: `default`, `acme`, `beta`, `gamma`. CI matrix: [.github/workflows/build-clients.yml](.github/workflows/build-clients.yml) (includes a **`lint`** job: Spotless + Detekt).
 
 ---
 
@@ -53,6 +57,7 @@ For navigation stacks, network behavior, and file-level patterns, use [README.MD
 2. **Single graph** — One Metro `@DependencyGraph` (`AppGraph` in `sharedUI`). No second graph.
 3. **Decompose shape** — Per feature: interface + `Default*` implementation + `*Content` composable. Instantiate feature components from `DefaultRootComponent` only; follow the rule when adding screens or tabs.
 4. **Gradle** — Use `build-logic` convention plugins (`whitelabel.kmp.*`). Do not duplicate KMP/Compose/Android SDK setup in module `build.gradle.kts` files.
+5. **Linting** — **Spotless** (root `build.gradle.kts`) formats Kotlin and Gradle scripts with **ktlint** + [compose-rules](https://mrmans0n.github.io/compose-rules/ktlint/). **Detekt** (`dev.detekt` 2.x) runs via **`whitelabel.detekt`**; shared config is `config/detekt/detekt.yml`. Do not add `detekt-formatting` (duplicates ktlint). Shell-only modules apply `whitelabel.detekt` **after** Kotlin/Android plugins.
 
 ---
 
@@ -64,7 +69,8 @@ These rules are **supplemental** to this file. When your task touches the topic,
 |------|--------|
 | [.cursor/rules/brand-config.mdc](.cursor/rules/brand-config.mdc) | `BrandConfig`, `FeatureToggles`, `@ContributesBinding`, `AppGraph`, `LocalBrandConfig` |
 | [.cursor/rules/decompose-navigation.mdc](.cursor/rules/decompose-navigation.mdc) | Feature component triple, `RootComponent` / `DefaultRootComponent` extension steps |
-| [.cursor/rules/gradle-convention-plugins.mdc](.cursor/rules/gradle-convention-plugins.mdc) | `whitelabel.kmp.library` / `compose` / `database` / `network` / `android.library` templates |
+| [.cursor/rules/gradle-convention-plugins.mdc](.cursor/rules/gradle-convention-plugins.mdc) | `whitelabel.kmp.library` / `compose` / `database` / `network` / `android.library` / `detekt` templates |
+| [.cursor/rules/linting-spotless-detekt.mdc](.cursor/rules/linting-spotless-detekt.mdc) | Spotless (ktlint + compose-rules), Detekt 2.x, `whitelabel.detekt`, CI lint |
 | [.cursor/rules/jujutsu-vcs.mdc](.cursor/rules/jujutsu-vcs.mdc) | Prefer `jj` for local VCS; `jj git` for remote; CI still GitHub/Git |
 
 ---
@@ -72,6 +78,7 @@ These rules are **supplemental** to this file. When your task touches the topic,
 ## Further documentation
 
 - [docs/jj-version-control.md](docs/jj-version-control.md) — Jujutsu (`jj`) usage: install, clone, daily commands, Git remote sync.
+- [docs/code-quality.md](docs/code-quality.md) — Spotless (ktlint + compose-rules), Detekt 2.x, config paths, CI lint job.
 - [docs/white-label-resources-demo.md](docs/white-label-resources-demo.md) — Presenter notes: compile-time client selection vs resource merge, demo switcher limits, theming.
 - [README.MD](README.MD) — Long-form structure diagram, client table, `BrandConfig` snippet, iOS notes, and feature-specific detail.
 
@@ -80,6 +87,6 @@ These rules are **supplemental** to this file. When your task touches the topic,
 ## Extending agent guidance
 
 - **Repository-specific** — Add or edit [.cursor/rules/](.cursor/rules/) (`.mdc` with YAML frontmatter: `description`, `globs`, `alwaysApply` as needed). Keep narrow scope per rule.
-- **Editor and personal workflows** — Use Cursor **Skills** from your skills library when authoring new rules or skills, or when changing editor settings (e.g. “Create Cursor rules”, “Create Skill”, “Modify Cursor settings” skills if installed).
+- **Editor and personal workflows** — Use Cursor **Skills** from your skills library when authoring new rules or skills, or when changing editor settings (e.g. “Create Cursor rules”, “Create Skill”, “Modify Cursor settings” skills if installed). Repo skills: [.cursor/skills/jujutsu-vcs/SKILL.md](.cursor/skills/jujutsu-vcs/SKILL.md) (jj), [.cursor/skills/gradle-lint/SKILL.md](.cursor/skills/gradle-lint/SKILL.md) (Spotless + Detekt).
 
 For product behavior of AGENTS.md and `.cursor/rules` in Cursor itself, see [Cursor documentation](https://cursor.com/docs).

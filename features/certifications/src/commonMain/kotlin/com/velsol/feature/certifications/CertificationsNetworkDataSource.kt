@@ -28,7 +28,7 @@ internal class CertificationsNetworkDataSource(
                     "expiring" -> CertStatus.Expiring
                     "expired" -> CertStatus.Expired
                     else -> CertStatus.Active
-                }
+                },
             )
         }
     }

@@ -8,6 +8,7 @@ data class FeatureToggles(
 interface BrandConfig {
     val appName: String
     val tagline: String
+
     /** Label for a unit of field work (e.g. "Task", "Job", "Delivery") — brand-specific terminology. */
     val taskLabel: String
     val apiBaseUrl: String

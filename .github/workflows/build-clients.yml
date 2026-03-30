@@ -8,6 +8,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    name: Lint (Spotless + Detekt)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: gradle
+
+      - name: Spotless + Detekt
+        run: ./gradlew spotlessCheck detekt --continue --stacktrace
+
   build-android:
     name: Android (${{ matrix.client }})
     runs-on: ubuntu-latest
