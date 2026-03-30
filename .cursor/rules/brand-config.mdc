@@ -1,0 +1,60 @@
+---
+description: Conventions for BrandConfig, FeatureToggles, Metro DI, and the white-label client system
+globs: "**/*.kt"
+alwaysApply: false
+---
+
+# BrandConfig & White-Label DI Conventions
+
+## Contracts live in `core:domain` — no framework deps
+
+`BrandConfig` and `FeatureToggles` are plain Kotlin in `core/domain`. Never import Metro, Compose, or Android APIs there.
+
+## Every client module follows the same pattern
+
+```kotlin
+@ContributesBinding(AppScope::class)
+@Inject
+class AcmeBrandConfig : BrandConfig {
+    override val appName = "Acme"
+    override val apiBaseUrl = "https://api.acme.com"
+    override val supportEmail = "support@acme.com"
+    override val primaryColorArgb = 0xFFE53935L
+    override val onPrimaryColorArgb = 0xFFFFFFFFL
+    override val features = FeatureToggles(hasHvacCertifications = true)
+}
+```
+
+- Both `@ContributesBinding(AppScope::class)` and `@Inject` are required — Metro won't wire the binding without them.
+- The `replaces` parameter overrides another binding: `@ContributesBinding(AppScope::class, replaces = [DefaultBrandConfig::class])`.
+
+## The Metro graph lives in `sharedUI`
+
+`AppGraph` in `sharedUI/src/commonMain/kotlin/com/velsol/di/AppGraph.kt` is the only `@DependencyGraph`. Platform entry points call `createGraph<AppGraph>()` to get an instance; Metro picks up all `@ContributesBinding(AppScope::class)` declarations from the classpath.
+
+Never create a second `@DependencyGraph` — all bindings funnel through `AppGraph`.
+
+## Consuming brand config in Compose
+
+Use `LocalBrandConfig.current` — never pass `BrandConfig` as a parameter through the composable tree:
+
+```kotlin
+// ✅ GOOD — read from CompositionLocal
+val features = LocalBrandConfig.current.features
+if (features.hasHvacCertifications) EpaFormButton()
+
+// ❌ BAD — threading config through every composable
+fun SomeScreen(config: BrandConfig) { ... }
+```
+
+`LocalBrandConfig` is provided by `AppTheme`; it is always present inside `App()`.
+
+## Adding a new feature flag
+
+1. Add the property to `FeatureToggles` in `core/domain` with a `false` default.
+2. Override it in whichever client modules need it set to `true`.
+3. The compiler enforces no client can be missing the field.
+
+## Active client is a Gradle property
+
+`settings.gradle.kts` and `sharedUI/build.gradle.kts` both read `-Pclient=xxx` (default: `default`). The selected client module is wired in at configuration time — never at runtime.

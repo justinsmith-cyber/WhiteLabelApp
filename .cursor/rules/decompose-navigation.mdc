@@ -1,0 +1,76 @@
+---
+description: Enforces Decompose navigation conventions for feature components and the root router
+globs: "**/*.kt"
+alwaysApply: false
+---
+
+# Decompose Navigation Conventions
+
+This project uses [Decompose](https://github.com/arkivanov/Decompose) for navigation. Every feature module exports a component interface, a default implementation, and a content composable.
+
+## Feature Module Structure
+
+Each `features/<name>/` module must provide exactly three pieces:
+
+```kotlin
+// 1. Interface — state (Value<T>) + intent functions only
+interface HomeComponent
+
+// 2. Default implementation — delegates ComponentContext
+class DefaultHomeComponent(
+    componentContext: ComponentContext
+) : HomeComponent, ComponentContext by componentContext
+
+// 3. Content composable — pure UI, no CompositionLocals from sharedUI
+@Composable
+fun HomeContent(
+    component: HomeComponent,
+    modifier: Modifier = Modifier,
+    // cross-cutting concerns passed as parameters (e.g. isDark, onToggleDarkMode)
+)
+```
+
+## Root Component (`sharedUI`)
+
+`DefaultRootComponent` is the only place that instantiates feature components.
+
+To add a new screen:
+1. Add a `@Serializable data object NewScreen : Config` entry to `DefaultRootComponent.Config`
+2. Add a `NewScreen -> RootComponent.Child.NewChild(DefaultNewComponent(ctx))` branch in `createChild`
+3. Add `class NewChild(val component: NewComponent) : Child()` to `RootComponent.Child`
+4. Handle the new child in `RootContent`'s `when` block
+
+## Cross-Cutting Concerns (theme, URI handling)
+
+Feature composables must **not** import from `sharedUI` (circular dependency). Pass cross-cutting concerns as parameters instead:
+
+```kotlin
+// ✅ GOOD — RootContent.kt in sharedUI supplies these
+HomeContent(
+    component = instance.component,
+    isDark = isDark,
+    onToggleDarkMode = { isDark = !isDark },
+    onOpenGithub = { uriHandler.openUri("...") }
+)
+
+// ❌ BAD — features/home cannot depend on sharedUI
+var isDark by LocalThemeIsDark.current  // compile error: circular dep
+```
+
+## Platform Entry Points
+
+Each platform shell creates the Metro DI graph **first**, then `DefaultRootComponent`, then passes both to `App()`:
+
+```kotlin
+val appGraph = createGraph<AppGraph>()           // Metro — collects @ContributesBinding
+val root = DefaultRootComponent(context)         // Decompose
+App(rootComponent = root, brandConfig = appGraph.brandConfig)
+```
+
+- **Android** (`AppActivity`): `defaultComponentContext()` for the Decompose context; graph is a `lazy` property on the activity.
+- **Desktop** (`main.kt`): `DefaultComponentContext(LifecycleRegistry())` — stop/destroy lifecycle on window close.
+- **iOS** (`main.kt`): same `DefaultComponentContext` pattern inside `ComposeUIViewController`.
+
+## Dependency Rule
+
+`features/*` → no dependency on `sharedUI`. `sharedUI` depends on `features/*`.

@@ -1,0 +1,120 @@
+package com.velsol.theme
+
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import com.velsol.core.domain.brand.BrandConfig
+
+val LocalBrandConfig = staticCompositionLocalOf<BrandConfig> {
+    error("No BrandConfig provided — wrap your content in AppTheme")
+}
+
+internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
+
+@Composable
+internal fun AppTheme(
+    brandConfig: BrandConfig,
+    onThemeChanged: @Composable (isDark: Boolean) -> Unit,
+    content: @Composable () -> Unit
+) {
+    val primary = Color(brandConfig.primaryColorArgb)
+    val onPrimary = Color(brandConfig.onPrimaryColorArgb)
+    val secondary = Color(brandConfig.secondaryColorArgb)
+    val onSecondary = Color(brandConfig.onSecondaryColorArgb)
+    val tertiary = Color(brandConfig.tertiaryColorArgb)
+    val onTertiary = Color(brandConfig.onTertiaryColorArgb)
+
+    val lightColorScheme = lightColorScheme(
+        primary = primary,
+        onPrimary = onPrimary,
+        secondary = secondary,
+        onSecondary = onSecondary,
+        primaryContainer = PrimaryContainerLight,
+        onPrimaryContainer = OnPrimaryContainerLight,
+        secondaryContainer = SecondaryContainerLight,
+        onSecondaryContainer = OnSecondaryContainerLight,
+        tertiary = tertiary,
+        onTertiary = onTertiary,
+        tertiaryContainer = TertiaryContainerLight,
+        onTertiaryContainer = OnTertiaryContainerLight,
+        error = ErrorLight,
+        onError = OnErrorLight,
+        errorContainer = ErrorContainerLight,
+        onErrorContainer = OnErrorContainerLight,
+        background = BackgroundLight,
+        onBackground = OnBackgroundLight,
+        surface = SurfaceLight,
+        onSurface = OnSurfaceLight,
+        surfaceVariant = SurfaceVariantLight,
+        onSurfaceVariant = OnSurfaceVariantLight,
+        outline = OutlineLight,
+        outlineVariant = OutlineVariantLight,
+        scrim = ScrimLight,
+        inverseSurface = InverseSurfaceLight,
+        inverseOnSurface = InverseOnSurfaceLight,
+        inversePrimary = InversePrimaryLight,
+        surfaceDim = SurfaceDimLight,
+        surfaceBright = SurfaceBrightLight,
+        surfaceContainerLowest = SurfaceContainerLowestLight,
+        surfaceContainerLow = SurfaceContainerLowLight,
+        surfaceContainer = SurfaceContainerLight,
+        surfaceContainerHigh = SurfaceContainerHighLight,
+        surfaceContainerHighest = SurfaceContainerHighestLight,
+    )
+
+    val darkColorScheme = darkColorScheme(
+        primary = primary,
+        onPrimary = onPrimary,
+        secondary = secondary,
+        onSecondary = onSecondary,
+        primaryContainer = PrimaryContainerDark,
+        onPrimaryContainer = OnPrimaryContainerDark,
+        secondaryContainer = SecondaryContainerDark,
+        onSecondaryContainer = OnSecondaryContainerDark,
+        tertiary = tertiary,
+        onTertiary = onTertiary,
+        tertiaryContainer = TertiaryContainerDark,
+        onTertiaryContainer = OnTertiaryContainerDark,
+        error = ErrorDark,
+        onError = OnErrorDark,
+        errorContainer = ErrorContainerDark,
+        onErrorContainer = OnErrorContainerDark,
+        background = BackgroundDark,
+        onBackground = OnBackgroundDark,
+        surface = SurfaceDark,
+        onSurface = OnSurfaceDark,
+        surfaceVariant = SurfaceVariantDark,
+        onSurfaceVariant = OnSurfaceVariantDark,
+        outline = OutlineDark,
+        outlineVariant = OutlineVariantDark,
+        scrim = ScrimDark,
+        inverseSurface = InverseSurfaceDark,
+        inverseOnSurface = InverseOnSurfaceDark,
+        inversePrimary = InversePrimaryDark,
+        surfaceDim = SurfaceDimDark,
+        surfaceBright = SurfaceBrightDark,
+        surfaceContainerLowest = SurfaceContainerLowestDark,
+        surfaceContainerLow = SurfaceContainerLowDark,
+        surfaceContainer = SurfaceContainerDark,
+        surfaceContainerHigh = SurfaceContainerHighDark,
+        surfaceContainerHighest = SurfaceContainerHighestDark,
+    )
+
+    val systemIsDark = isSystemInDarkTheme()
+    val isDarkState = remember(systemIsDark) { mutableStateOf(systemIsDark) }
+    CompositionLocalProvider(
+        LocalThemeIsDark provides isDarkState,
+        LocalBrandConfig provides brandConfig,
+    ) {
+        val isDark by isDarkState
+        onThemeChanged(isDark)
+        MaterialTheme(
+            colorScheme = if (isDark) darkColorScheme else lightColorScheme,
+            content = { Surface(content = content) }
+        )
+    }
+}

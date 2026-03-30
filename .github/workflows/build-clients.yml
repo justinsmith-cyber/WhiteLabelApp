@@ -1,0 +1,105 @@
+name: Build Client Flavors
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: Android (${{ matrix.client }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        client: [default, acme, beta]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: gradle
+
+      - name: Build Android APK
+        run: ./gradlew :androidApp:assembleRelease -Pclient=${{ matrix.client }} --stacktrace
+
+      - name: Upload Android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.client }}-android-apk
+          path: androidApp/build/outputs/apk/release/
+          retention-days: 14
+
+  build-desktop:
+    name: Desktop (${{ matrix.client }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        client: [default, acme, beta]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: gradle
+
+      - name: Build Desktop distribution
+        run: ./gradlew :desktopApp:packageDistributionForCurrentOS -Pclient=${{ matrix.client }} --stacktrace
+
+      - name: Upload Desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.client }}-desktop
+          path: desktopApp/build/compose/binaries/
+          retention-days: 14
+
+  build-ios:
+    name: iOS (${{ matrix.client }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        client: [default, acme, beta]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: gradle
+
+      - name: Build iOS KMP framework
+        run: ./gradlew :sharedUI:linkDebugFrameworkIosSimulatorArm64 -Pclient=${{ matrix.client }} --stacktrace
+
+      - name: Build iOS app
+        run: |
+          xcodebuild \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Upload iOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.client }}-ios-framework
+          path: sharedUI/build/bin/iosSimulatorArm64/debugFramework/
+          retention-days: 14

@@ -1,0 +1,78 @@
+---
+description: Enforces build-logic convention plugin usage for all Gradle modules in the WhiteLabel KMP project
+globs: **/build.gradle.kts
+alwaysApply: false
+---
+
+# Gradle Convention Plugins
+
+This project uses `build-logic` precompiled script plugins. **Never duplicate KMP/Compose/Android config** in module `build.gradle.kts` files.
+
+## Available Convention Plugins
+
+| Plugin ID | What it includes |
+|---|---|
+| `whitelabel.kmp.library` | KMP targets (Android + JVM + iOS), JVM 17, Android SDK 36/23 |
+| `whitelabel.kmp.compose` | Applies `kmp.library` + Compose MP plugins + Compose + Decompose (`api`) in `commonMain` |
+| `whitelabel.kmp.database` | Applies `kmp.library` + Room runtime, KSP compiler, `schemaDirectory` config |
+| `whitelabel.kmp.network` | Applies `kmp.library` + Ktor client (platform engines), kotlinx-serialization |
+| `whitelabel.android.library` | Android-only library, `kotlin.android`, JVM 17 |
+
+## Module Templates
+
+**KMP + Compose feature module** (most common):
+```kotlin
+plugins {
+    id("whitelabel.kmp.compose")
+    alias(libs.plugins.kotlinx.serialization) // optional extras
+}
+android { namespace = "com.velsol.feature.jobs" }
+
+compose.resources {
+    packageOfResClass = "com.velsol.feature.jobs.generated.resources"
+}
+```
+
+**KMP Room database module**:
+```kotlin
+plugins {
+    id("whitelabel.kmp.database")
+}
+android { namespace = "com.velsol.core.database" }
+```
+
+**KMP Ktor network module**:
+```kotlin
+plugins {
+    id("whitelabel.kmp.network")
+}
+android { namespace = "com.velsol.core.network" }
+```
+
+**KMP data/domain module** (no Compose, no Room, no Ktor):
+```kotlin
+plugins {
+    id("whitelabel.kmp.library")
+}
+android { namespace = "com.velsol.core.domain" }
+```
+
+**Android-only utility module**:
+```kotlin
+plugins {
+    id("whitelabel.android.library")
+}
+android { namespace = "com.velsol.core.util" }
+```
+
+## Rules
+
+- Never manually configure `androidTarget`, `jvm()`, `iosArm64()`, `iosSimulatorArm64()` in a module — that lives in `whitelabel.kmp.library`.
+- Never repeat `compileSdk`, `minSdk`, or `compileOptions` in module files — already in the convention plugins.
+- Never add Room, KSP, or `room {}` config to a module — use `whitelabel.kmp.database` instead.
+- Never add Ktor or platform engine deps (`ktor-client-okhttp`, `ktor-client-darwin`) to a module — use `whitelabel.kmp.network` instead.
+- Never add `decompose` or `decompose-compose` to a feature module — they are provided as `api` by `whitelabel.kmp.compose`.
+- Always set `compose.resources { packageOfResClass = "com.velsol.feature.<name>.generated.resources" }` in every feature module that owns Compose resources.
+- To change SDK versions or JVM targets globally, edit `build-logic/src/main/kotlin/whitelabel.kmp.library.gradle.kts`.
+- To add a new shared Compose dependency, add it to `whitelabel.kmp.compose.gradle.kts`, not to individual modules.
+- New Gradle plugin JARs needed by convention plugins must be added as `compileOnly` deps in `build-logic/build.gradle.kts` and as library entries (not plugin aliases) in `gradle/libs.versions.toml`.
