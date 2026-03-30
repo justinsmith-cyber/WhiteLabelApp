@@ -32,6 +32,7 @@ dependencyResolutionManagement {
 include(":core:database")
 include(":core:domain")
 include(":core:network")
+include(":core:theme")
 include(":features:home")
 include(":features:certifications")
 include(":features:inventory")

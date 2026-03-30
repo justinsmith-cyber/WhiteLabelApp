@@ -23,6 +23,7 @@ kotlin {
 
         commonMain.dependencies {
             api(project(":core:domain"))
+            api(project(":core:theme"))
             implementation(project(":demo-brands"))
             implementation(project(":clients:$client"))
             implementation(project(":core:database"))

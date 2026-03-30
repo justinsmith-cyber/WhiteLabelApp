@@ -9,6 +9,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":core:domain"))
+            implementation(project(":core:theme"))
             implementation(project(":core:network"))
             implementation(libs.kotlinx.coroutines.core)
         }

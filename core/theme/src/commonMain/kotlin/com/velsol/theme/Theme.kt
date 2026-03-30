@@ -21,10 +21,11 @@ val LocalBrandConfig = staticCompositionLocalOf<BrandConfig> {
     error("No BrandConfig provided — wrap your content in AppTheme")
 }
 
-internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
+val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
 
+@Suppress("ModifierMissing")
 @Composable
-internal fun AppTheme(
+fun AppTheme(
     brandConfig: BrandConfig,
     onThemeChange: @Composable (isDark: Boolean) -> Unit,
     content: @Composable () -> Unit,
