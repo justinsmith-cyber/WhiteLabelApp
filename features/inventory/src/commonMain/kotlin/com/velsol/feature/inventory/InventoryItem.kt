@@ -1,8 +1,8 @@
 package com.velsol.feature.inventory
 
-internal enum class StockLevel { InStock, LowStock, OutOfStock }
+enum class StockLevel { InStock, LowStock, OutOfStock }
 
-internal data class InventoryItem(
+data class InventoryItem(
     val name: String,
     val sku: String,
     val quantity: Int,

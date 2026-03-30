@@ -19,6 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,11 +35,10 @@ fun InventoryContent(
     brandConfig: BrandConfig,
     modifier: Modifier = Modifier,
 ) {
+    val state by component.state.collectAsState()
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
-    val inStockCount = mockInventory.count { it.stockLevel == StockLevel.InStock }
-    val lowCount = mockInventory.count { it.stockLevel == StockLevel.LowStock }
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -66,19 +67,19 @@ fun InventoryContent(
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "${mockInventory.size} items tracked",
+                        text = "${state.items.size} items tracked",
                         color = onPrimary.copy(alpha = 0.82f),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(16.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatBadge(
-                            label = "$inStockCount In Stock",
+                            label = "${state.inStockCount} In Stock",
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
                         StatBadge(
-                            label = "$lowCount Low Stock",
+                            label = "${state.lowCount} Low Stock",
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
@@ -96,7 +97,7 @@ fun InventoryContent(
             )
         }
 
-        items(mockInventory) { item ->
+        items(state.items) { item ->
             InventoryCard(
                 item = item,
                 primary = primary,

@@ -40,6 +40,7 @@ internal fun <T> runOnUiThread(block: () -> T): T {
     var error: Throwable? = null
     var result: T? = null
     SwingUtilities.invokeAndWait {
+        @Suppress("TooGenericExceptionCaught")
         try {
             result = block()
         } catch (e: Throwable) {

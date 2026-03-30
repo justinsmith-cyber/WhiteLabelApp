@@ -19,6 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,8 +35,8 @@ fun InventoryDetailContent(
     brandConfig: BrandConfig,
     modifier: Modifier = Modifier,
 ) {
-    val item = mockInventory.find { it.sku == component.itemSku }
-        ?: return
+    val state by component.state.collectAsState()
+    val item = state.item ?: return
 
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)

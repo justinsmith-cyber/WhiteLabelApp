@@ -14,6 +14,11 @@ class DefaultInventoryComponent(
 ) : InventoryComponent,
     ComponentContext by componentContext {
 
+    // Single repository instance shared across all child components in this sub-graph.
+    private val repository: InventoryRepository = DefaultInventoryRepository()
+    private val getInventoryList = GetInventoryListUseCase(repository)
+    private val getInventoryItem = GetInventoryItemUseCase(repository)
+
     private val navigation = StackNavigation<Config>()
 
     override val stack: Value<ChildStack<*, InventoryComponent.Child>> = childStack(
@@ -31,6 +36,7 @@ class DefaultInventoryComponent(
         Config.List -> InventoryComponent.Child.ListChild(
             DefaultInventoryListComponent(
                 componentContext = context,
+                getInventoryList = getInventoryList,
                 onItemSelectedCallback = { sku -> navigation.push(Config.Detail(sku)) },
             ),
         )
@@ -40,6 +46,7 @@ class DefaultInventoryComponent(
                 componentContext = context,
                 itemSku = config.sku,
                 onBackCallback = { navigation.pop() },
+                getInventoryItem = getInventoryItem,
             ),
         )
     }
