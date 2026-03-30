@@ -12,3 +12,9 @@ dependencies {
     implementation(libs.build.plugin.ksp)
     implementation(libs.build.plugin.detekt)
 }
+
+tasks.named("compilePluginsBlocks") {
+    doFirst {
+        println("SOURCES: " + (this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile).sources.files.joinToString("\n"))
+    }
+}

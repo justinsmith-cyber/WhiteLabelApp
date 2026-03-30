@@ -23,7 +23,7 @@ val composeRulesKtlint = "io.nlopez.compose.rules:ktlint:$composeRulesVersion"
 
 configure<SpotlessExtension> {
     kotlin {
-        target("**/*.kt")
+        target("src/**/*.kt")
         targetExclude(
             "**/build/**",
             "**/bin/**",
@@ -35,7 +35,7 @@ configure<SpotlessExtension> {
             .customRuleSets(listOf(composeRulesKtlint))
     }
     kotlinGradle {
-        target("**/*.kts")
+        target("*.gradle.kts", "build-logic/**/*.gradle.kts")
         targetExclude(
             "**/build/**",
             "**/bin/**",

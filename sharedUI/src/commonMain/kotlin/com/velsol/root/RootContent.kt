@@ -52,6 +52,27 @@ import org.jetbrains.compose.resources.painterResource
 
 private enum class Tab { Home, Certifications, Inventory }
 
+// Single source of tab definitions for bottom bar and navigation rail so feature flags and assets stay aligned.
+private data class TabDestination(
+    val tab: Tab,
+    val label: String,
+    val icon: DrawableResource,
+    val isVisible: (FeatureToggles) -> Boolean,
+)
+
+private val rootTabDestinations =
+    listOf(
+        TabDestination(Tab.Home, "Home", Res.drawable.ic_tab_home) { true },
+        TabDestination(Tab.Certifications, "Certifications", Res.drawable.ic_tab_certifications) {
+            it.hasHvacCertifications
+        },
+        TabDestination(Tab.Inventory, "Inventory", Res.drawable.ic_tab_inventory) {
+            it.hasPlumbingInventory
+        },
+    )
+
+private fun FeatureToggles.visibleRootTabs(): List<TabDestination> = rootTabDestinations.filter { it.isVisible(this) }
+
 private val WideLayoutBreakpoint = 900.dp
 
 @Composable
@@ -137,49 +158,19 @@ private fun AppNavigationBar(
         selectedTextColor = primary,
     )
     NavigationBar {
-        NavigationBarItem(
-            selected = selectedTab == Tab.Home,
-            onClick = { onSelectTab(Tab.Home) },
-            icon = {
-                TabIcon(
-                    iconRes = Res.drawable.ic_tab_home,
-                    label = "Home",
-                    isSelected = selectedTab == Tab.Home,
-                    color = primary,
-                )
-            },
-            label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
-            colors = colors,
-        )
-        if (features.hasHvacCertifications) {
+        for (dest in features.visibleRootTabs()) {
             NavigationBarItem(
-                selected = selectedTab == Tab.Certifications,
-                onClick = { onSelectTab(Tab.Certifications) },
+                selected = selectedTab == dest.tab,
+                onClick = { onSelectTab(dest.tab) },
                 icon = {
                     TabIcon(
-                        iconRes = Res.drawable.ic_tab_certifications,
-                        label = "Certifications",
-                        isSelected = selectedTab == Tab.Certifications,
+                        iconRes = dest.icon,
+                        label = dest.label,
+                        isSelected = selectedTab == dest.tab,
                         color = primary,
                     )
                 },
-                label = { Text("Certifications", style = MaterialTheme.typography.labelSmall) },
-                colors = colors,
-            )
-        }
-        if (features.hasPlumbingInventory) {
-            NavigationBarItem(
-                selected = selectedTab == Tab.Inventory,
-                onClick = { onSelectTab(Tab.Inventory) },
-                icon = {
-                    TabIcon(
-                        iconRes = Res.drawable.ic_tab_inventory,
-                        label = "Inventory",
-                        isSelected = selectedTab == Tab.Inventory,
-                        color = primary,
-                    )
-                },
-                label = { Text("Inventory", style = MaterialTheme.typography.labelSmall) },
+                label = { Text(dest.label, style = MaterialTheme.typography.labelSmall) },
                 colors = colors,
             )
         }
@@ -203,49 +194,19 @@ private fun AppNavigationRail(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) {
-        NavigationRailItem(
-            selected = selectedTab == Tab.Home,
-            onClick = { onSelectTab(Tab.Home) },
-            icon = {
-                TabIcon(
-                    iconRes = Res.drawable.ic_tab_home,
-                    label = "Home",
-                    isSelected = selectedTab == Tab.Home,
-                    color = primary,
-                )
-            },
-            label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
-            colors = colors,
-        )
-        if (features.hasHvacCertifications) {
+        for (dest in features.visibleRootTabs()) {
             NavigationRailItem(
-                selected = selectedTab == Tab.Certifications,
-                onClick = { onSelectTab(Tab.Certifications) },
+                selected = selectedTab == dest.tab,
+                onClick = { onSelectTab(dest.tab) },
                 icon = {
                     TabIcon(
-                        iconRes = Res.drawable.ic_tab_certifications,
-                        label = "Certifications",
-                        isSelected = selectedTab == Tab.Certifications,
+                        iconRes = dest.icon,
+                        label = dest.label,
+                        isSelected = selectedTab == dest.tab,
                         color = primary,
                     )
                 },
-                label = { Text("Certifications", style = MaterialTheme.typography.labelSmall) },
-                colors = colors,
-            )
-        }
-        if (features.hasPlumbingInventory) {
-            NavigationRailItem(
-                selected = selectedTab == Tab.Inventory,
-                onClick = { onSelectTab(Tab.Inventory) },
-                icon = {
-                    TabIcon(
-                        iconRes = Res.drawable.ic_tab_inventory,
-                        label = "Inventory",
-                        isSelected = selectedTab == Tab.Inventory,
-                        color = primary,
-                    )
-                },
-                label = { Text("Inventory", style = MaterialTheme.typography.labelSmall) },
+                label = { Text(dest.label, style = MaterialTheme.typography.labelSmall) },
                 colors = colors,
             )
         }
