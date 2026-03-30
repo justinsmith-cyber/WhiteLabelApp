@@ -123,7 +123,6 @@ fun RootContent(
                     selectedTab = selectedTab,
                     component = component,
                     stack = stack,
-                    brandConfig = brandConfig,
                     isDark = isDark,
                     onToggleDarkMode = { isDark = !isDark },
                     onOpenGithub = { uriHandler.openUri("https://github.com/terrakok") },
@@ -218,7 +217,6 @@ private fun RootTabScenes(
     selectedTab: Tab,
     component: RootComponent,
     stack: ChildStack<*, RootComponent.Child>,
-    brandConfig: BrandConfig,
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
@@ -234,7 +232,6 @@ private fun RootTabScenes(
             when (val instance = child.instance) {
                 is RootComponent.Child.HomeChild -> HomeContent(
                     component = instance.component,
-                    brandConfig = brandConfig,
                     isDark = isDark,
                     onToggleDarkMode = onToggleDarkMode,
                     onOpenGithub = onOpenGithub,
@@ -253,12 +250,10 @@ private fun RootTabScenes(
                 when (val instance = child.instance) {
                     is CertificationsComponent.Child.ListChild -> CertificationsContent(
                         component = instance.component,
-                        brandConfig = brandConfig,
                     )
 
                     is CertificationsComponent.Child.DetailChild -> CertificationDetailContent(
                         component = instance.component,
-                        brandConfig = brandConfig,
                     )
                 }
             }
@@ -274,12 +269,10 @@ private fun RootTabScenes(
                 when (val instance = child.instance) {
                     is InventoryComponent.Child.ListChild -> InventoryContent(
                         component = instance.component,
-                        brandConfig = brandConfig,
                     )
 
                     is InventoryComponent.Child.DetailChild -> InventoryDetailContent(
                         component = instance.component,
-                        brandConfig = brandConfig,
                     )
                 }
             }

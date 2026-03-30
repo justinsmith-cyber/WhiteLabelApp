@@ -29,14 +29,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.velsol.core.domain.brand.BrandConfig
+import com.velsol.theme.LocalBrandConfig
 
 @Composable
 fun CertificationDetailContent(
     component: CertDetailComponent,
-    brandConfig: BrandConfig,
     modifier: Modifier = Modifier,
 ) {
+    val brandConfig = LocalBrandConfig.current
     val state by component.state.collectAsState()
 
     val primary = Color(brandConfig.primaryColorArgb)

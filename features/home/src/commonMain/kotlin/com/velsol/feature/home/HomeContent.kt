@@ -45,8 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.velsol.core.domain.brand.BrandConfig
 import com.velsol.core.domain.brand.FeatureToggles
+import com.velsol.theme.LocalBrandConfig
 import com.velsol.feature.home.generated.resources.Res
 import com.velsol.feature.home.generated.resources.ic_dark_mode
 import com.velsol.feature.home.generated.resources.ic_light_mode
@@ -60,13 +60,13 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 fun HomeContent(
     component: HomeComponent,
-    brandConfig: BrandConfig,
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
     onShowDemoSwitcher: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val brandConfig = LocalBrandConfig.current
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
