@@ -3,12 +3,12 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.build.plugin.kotlin)
-    compileOnly(libs.build.plugin.android)
-    compileOnly(libs.build.plugin.compose)
-    compileOnly(libs.build.plugin.compose.compiler)
-    compileOnly(libs.build.plugin.serialization)
-    compileOnly(libs.build.plugin.room)
-    compileOnly(libs.build.plugin.ksp)
-    compileOnly(libs.build.plugin.detekt)
+    implementation(libs.build.plugin.kotlin)
+    implementation(libs.build.plugin.android)
+    implementation(libs.build.plugin.compose)
+    implementation(libs.build.plugin.compose.compiler)
+    implementation(libs.build.plugin.serialization)
+    implementation(libs.build.plugin.room)
+    implementation(libs.build.plugin.ksp)
+    implementation(libs.build.plugin.detekt)
 }

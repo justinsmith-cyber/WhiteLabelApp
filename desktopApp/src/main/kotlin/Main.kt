@@ -19,6 +19,7 @@ import com.velsol.di.appBrandConfig
 import com.velsol.root.DefaultRootComponent
 import java.awt.Dimension
 import java.awt.Toolkit
+import javax.swing.SwingUtilities
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -32,9 +33,29 @@ private fun initialWindowDpSize(): DpSize {
     return DpSize(targetW.dp, targetH.dp)
 }
 
+internal fun <T> runOnUiThread(block: () -> T): T {
+    if (SwingUtilities.isEventDispatchThread()) {
+        return block()
+    }
+    var error: Throwable? = null
+    var result: T? = null
+    SwingUtilities.invokeAndWait {
+        try {
+            result = block()
+        } catch (e: Throwable) {
+            error = e
+        }
+    }
+    error?.let { throw it }
+    @Suppress("UNCHECKED_CAST")
+    return result as T
+}
+
 fun main() {
     val lifecycle = LifecycleRegistry()
-    val root = DefaultRootComponent(DefaultComponentContext(lifecycle = lifecycle))
+    val root = runOnUiThread {
+        DefaultRootComponent(DefaultComponentContext(lifecycle = lifecycle))
+    }
     lifecycle.resume()
 
     application {

@@ -2,6 +2,7 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 
 plugins {
     id("whitelabel.kmp.library")
+    id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
