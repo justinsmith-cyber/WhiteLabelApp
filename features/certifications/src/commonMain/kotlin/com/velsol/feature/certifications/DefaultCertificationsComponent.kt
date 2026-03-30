@@ -12,10 +12,15 @@ import kotlinx.serialization.Serializable
 
 class DefaultCertificationsComponent(
     componentContext: ComponentContext,
-    private val httpClient: HttpClient,
-    private val apiBaseUrl: String,
+    httpClient: HttpClient,
+    apiBaseUrl: String,
 ) : CertificationsComponent,
     ComponentContext by componentContext {
+
+    // Single repository instance shared across all child components in this sub-graph.
+    private val repository: CertificationsRepository = DefaultCertificationsRepository(httpClient, apiBaseUrl)
+    private val getCertifications = GetCertificationsUseCase(repository)
+    private val getCertification = GetCertificationUseCase(repository)
 
     private val navigation = StackNavigation<Config>()
 
@@ -34,8 +39,7 @@ class DefaultCertificationsComponent(
         Config.List -> CertificationsComponent.Child.ListChild(
             DefaultCertListComponent(
                 componentContext = context,
-                httpClient = httpClient,
-                apiBaseUrl = apiBaseUrl,
+                getCertifications = getCertifications,
                 onCertSelectedCallback = { name -> navigation.push(Config.Detail(name)) },
             ),
         )
@@ -45,6 +49,7 @@ class DefaultCertificationsComponent(
                 componentContext = context,
                 certName = config.certName,
                 onBackCallback = { navigation.pop() },
+                getCertification = getCertification,
             ),
         )
     }

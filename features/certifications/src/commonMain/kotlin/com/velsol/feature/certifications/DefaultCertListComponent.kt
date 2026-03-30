@@ -2,7 +2,6 @@ package com.velsol.feature.certifications
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.doOnDestroy
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,16 +12,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DefaultCertListComponent(
+class DefaultCertListComponent internal constructor(
     componentContext: ComponentContext,
-    httpClient: HttpClient,
-    apiBaseUrl: String,
+    private val getCertifications: GetCertificationsUseCase,
     private val onCertSelectedCallback: (String) -> Unit,
 ) : CertListComponent,
     ComponentContext by componentContext {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    private val repository = CertificationsRepository(httpClient, apiBaseUrl)
 
     private val _state = MutableStateFlow(
         CertListState(
@@ -30,7 +27,7 @@ class DefaultCertListComponent(
             isLoading = false,
             activeCount = mockCertifications.count { it.status == CertStatus.Active },
             expiringCount = mockCertifications.count { it.status == CertStatus.Expiring },
-        )
+        ),
     )
     override val state: StateFlow<CertListState> = _state.asStateFlow()
 
@@ -42,7 +39,7 @@ class DefaultCertListComponent(
     private fun loadCertifications() {
         scope.launch {
             _state.update { it.copy(isLoading = true) }
-            val loadedCerts = repository.getCertifications()
+            val loadedCerts = getCertifications()
             _state.update {
                 it.copy(
                     certs = loadedCerts,
