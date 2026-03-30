@@ -2,6 +2,10 @@
 
 A Kotlin Multiplatform demo showing how a single shared codebase can produce multiple distinct branded apps — different colors, logos, app names, feature sets, and API endpoints — from one build-time switch.
 
+## Version control
+
+Day-to-day history for this repository is managed with **[Jujutsu](https://jj-vcs.dev/)** (`jj`); pushes and CI still use **Git** (see `.github/workflows/`). Commands, clone/init, and remote sync are documented in [docs/jj-version-control.md](docs/jj-version-control.md).
+
 ## Project Structure
 
 ```

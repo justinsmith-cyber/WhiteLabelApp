@@ -22,6 +22,16 @@ Clients in this repo: `default`, `acme`, `beta`, `gamma`. CI matrix: [.github/wo
 
 ---
 
+## Version control (Jujutsu)
+
+Use **[Jujutsu](https://jj-vcs.dev/)** (`jj`) for local history in this repo: `jj status`, `jj diff`, `jj log`, `jj commit`, etc. For Git remotes, prefer `jj git fetch` and `jj git push` over raw `git pull` / `git push` when a `.jj/` directory is present.
+
+Full workflow (clone, colocation, bookmarks, export/import): [docs/jj-version-control.md](docs/jj-version-control.md).
+
+CI remains defined under [`.github/workflows/`](.github/workflows/) and expects a Git remote as today.
+
+---
+
 ## Architecture at a glance
 
 - **`core:domain`** — Pure contracts: `BrandConfig`, `FeatureToggles`, `AppScope`; no DI/Compose/Android.
@@ -55,11 +65,13 @@ These rules are **supplemental** to this file. When your task touches the topic,
 | [.cursor/rules/brand-config.mdc](.cursor/rules/brand-config.mdc) | `BrandConfig`, `FeatureToggles`, `@ContributesBinding`, `AppGraph`, `LocalBrandConfig` |
 | [.cursor/rules/decompose-navigation.mdc](.cursor/rules/decompose-navigation.mdc) | Feature component triple, `RootComponent` / `DefaultRootComponent` extension steps |
 | [.cursor/rules/gradle-convention-plugins.mdc](.cursor/rules/gradle-convention-plugins.mdc) | `whitelabel.kmp.library` / `compose` / `database` / `network` / `android.library` templates |
+| [.cursor/rules/jujutsu-vcs.mdc](.cursor/rules/jujutsu-vcs.mdc) | Prefer `jj` for local VCS; `jj git` for remote; CI still GitHub/Git |
 
 ---
 
 ## Further documentation
 
+- [docs/jj-version-control.md](docs/jj-version-control.md) — Jujutsu (`jj`) usage: install, clone, daily commands, Git remote sync.
 - [docs/white-label-resources-demo.md](docs/white-label-resources-demo.md) — Presenter notes: compile-time client selection vs resource merge, demo switcher limits, theming.
 - [README.MD](README.MD) — Long-form structure diagram, client table, `BrandConfig` snippet, iOS notes, and feature-specific detail.
 

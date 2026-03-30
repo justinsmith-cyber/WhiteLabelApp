@@ -1,0 +1,17 @@
+---
+description: Use Jujutsu (jj) for local version control; jj git for Git remotes; CI remains GitHub/Git
+alwaysApply: true
+---
+
+# Jujutsu version control
+
+This repository standardizes on **Jujutsu** (`jj`) for local history when a `.jj/` directory exists.
+
+## Agent behavior
+
+- Prefer **`jj`** over raw **`git`** for everyday operations: `jj status`, `jj diff`, `jj log`, `jj commit`, `jj new`, `jj describe`, `jj rebase`, etc., when they apply to the user’s task.
+- For **remotes**, prefer **`jj git fetch`** and **`jj git push`** (and `jj git remote`) instead of defaulting to `git pull` / `git push`, unless the workspace is Git-only with no jj repo.
+- Do **not** treat `git commit` / `git merge` as the default recommendation when jj equivalents exist for this repo.
+- **CI and workflows** — Reading or editing `.github/workflows/` is normal. GitHub Actions still runs against Git branches.
+
+Human-oriented commands and clone/setup: [docs/jj-version-control.md](docs/jj-version-control.md). Upstream reference: [Jujutsu docs](https://docs.jj-vcs.dev/latest/).
