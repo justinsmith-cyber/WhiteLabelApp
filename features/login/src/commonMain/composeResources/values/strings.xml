@@ -1,11 +1,16 @@
 <resources>
     <string name="sign_in_with_sso">Sign In with SSO</string>
+    <string name="sign_in">Sign In</string>
     <string name="signing_in">Signing in…</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="or_divider">or</string>
     <string name="remember_name">Remember my name</string>
     <string name="contact_support">Contact Support</string>
     <string name="version_label">v%1$s</string>
     <string name="app_logo_description">%1$s logo</string>
     <string name="sign_in_error">Sign-in failed. Please try again.</string>
+    <string name="credentials_required">Please enter your username and password.</string>
     <string name="contact_support_title">Contact Support</string>
     <string name="navigate_back">Navigate back</string>
     <string name="back_arrow">←</string>

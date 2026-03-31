@@ -19,11 +19,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -37,6 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,10 +57,14 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.velsol.feature.login.generated.resources.Res
 import com.velsol.feature.login.generated.resources.app_logo_description
 import com.velsol.feature.login.generated.resources.contact_support
+import com.velsol.feature.login.generated.resources.credentials_required
+import com.velsol.feature.login.generated.resources.or_divider
+import com.velsol.feature.login.generated.resources.password
 import com.velsol.feature.login.generated.resources.remember_name
+import com.velsol.feature.login.generated.resources.sign_in
 import com.velsol.feature.login.generated.resources.sign_in_error
 import com.velsol.feature.login.generated.resources.sign_in_with_sso
-import com.velsol.feature.login.generated.resources.signing_in
+import com.velsol.feature.login.generated.resources.username
 import com.velsol.feature.login.generated.resources.version_label
 import com.velsol.theme.LocalBrandConfig
 import org.jetbrains.compose.resources.stringResource
@@ -85,13 +98,12 @@ internal fun LoginScreenContent(
     val primary = Color(brandConfig.primaryColorArgb)
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
 
-    val loginState by component.loginState.collectAsState()
-    val rememberName by component.rememberName.collectAsState()
-
-    val isLoading = loginState is LoginState.Loading
-    val error = (loginState as? LoginState.Error)?.message
+    val state by component.state.collectAsState()
 
     val onSignIn = remember(component) { { component.onIntent(LoginIntent.SignIn) } }
+    val onSignInWithCredentials = remember(component) { { component.onIntent(LoginIntent.SignInWithCredentials) } }
+    val onSetUsername = remember(component) { { value: String -> component.onIntent(LoginIntent.SetUsername(value)) } }
+    val onSetPassword = remember(component) { { value: String -> component.onIntent(LoginIntent.SetPassword(value)) } }
     val onToggleRemember = remember(component) {
         { enabled: Boolean -> component.onIntent(LoginIntent.SetRememberName(enabled)) }
     }
@@ -101,6 +113,7 @@ internal fun LoginScreenContent(
         modifier = modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing)
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
@@ -114,12 +127,17 @@ internal fun LoginScreenContent(
         )
 
         ActionsSection(
-            isLoading = isLoading,
-            error = error,
-            rememberName = rememberName,
+            isLoading = state.isLoading,
+            error = state.error,
+            rememberName = state.rememberName,
+            username = state.username,
+            password = state.password,
             primary = primary,
             onPrimary = onPrimary,
             onSignIn = onSignIn,
+            onSignInWithCredentials = onSignInWithCredentials,
+            onSetUsername = onSetUsername,
+            onSetPassword = onSetPassword,
             onToggleRemember = onToggleRemember,
         )
 
@@ -188,20 +206,51 @@ private fun HeroSection(
 @Composable
 private fun ActionsSection(
     isLoading: Boolean,
-    error: String?,
+    error: LoginError?,
     rememberName: Boolean,
+    username: String,
+    password: String,
     primary: Color,
     onPrimary: Color,
     onSignIn: () -> Unit,
+    onSignInWithCredentials: () -> Unit,
+    onSetUsername: (String) -> Unit,
+    onSetPassword: (String) -> Unit,
     onToggleRemember: (Boolean) -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.fillMaxWidth(),
     ) {
+        OutlinedTextField(
+            value = username,
+            onValueChange = onSetUsername,
+            label = { Text(stringResource(Res.string.username)) },
+            singleLine = true,
+            enabled = !isLoading,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            shape = RoundedCornerShape(14.dp),
+        )
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = onSetPassword,
+            label = { Text(stringResource(Res.string.password)) },
+            singleLine = true,
+            enabled = !isLoading,
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+            ),
+            shape = RoundedCornerShape(14.dp),
+        )
+
         Button(
-            onClick = onSignIn,
+            onClick = onSignInWithCredentials,
             enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
@@ -224,7 +273,7 @@ private fun ActionsSection(
                     )
                 } else {
                     Text(
-                        text = stringResource(Res.string.sign_in_with_sso),
+                        text = stringResource(Res.string.sign_in),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 0.5.sp,
@@ -233,22 +282,65 @@ private fun ActionsSection(
             }
         }
 
+        OrDivider()
+
+        OutlinedButton(
+            onClick = onSignIn,
+            enabled = !isLoading,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = primary),
+        ) {
+            Text(
+                text = stringResource(Res.string.sign_in_with_sso),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 0.5.sp,
+            )
+        }
+
+        Spacer(Modifier.height(4.dp))
+
         RememberNameToggle(
             checked = rememberName,
             primary = primary,
             onCheckedChange = onToggleRemember,
         )
 
-        Crossfade(targetState = error) { msg ->
-            if (msg != null) {
+        Crossfade(targetState = error) { loginError ->
+            val errorText = when (loginError) {
+                LoginError.CredentialsRequired -> stringResource(Res.string.credentials_required)
+                LoginError.SignInFailed -> stringResource(Res.string.sign_in_error)
+                null -> null
+            }
+            if (errorText != null) {
                 Text(
-                    text = stringResource(Res.string.sign_in_error),
+                    text = errorText,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun OrDivider() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        HorizontalDivider(modifier = Modifier.weight(1f))
+        Text(
+            text = stringResource(Res.string.or_divider),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        HorizontalDivider(modifier = Modifier.weight(1f))
     }
 }
 

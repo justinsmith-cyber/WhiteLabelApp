@@ -9,6 +9,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DefaultLoginScreenComponent(
@@ -21,11 +22,8 @@ class DefaultLoginScreenComponent(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
-    override val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
-
-    private val _rememberName = MutableStateFlow(false)
-    override val rememberName: StateFlow<Boolean> = _rememberName.asStateFlow()
+    private val _state = MutableStateFlow(LoginScreenState())
+    override val state: StateFlow<LoginScreenState> = _state.asStateFlow()
 
     init {
         lifecycle.doOnDestroy { scope.cancel() }
@@ -34,18 +32,35 @@ class DefaultLoginScreenComponent(
     override fun onIntent(intent: LoginIntent) {
         when (intent) {
             LoginIntent.SignIn -> signIn()
-            is LoginIntent.SetRememberName -> _rememberName.value = intent.enabled
+            LoginIntent.SignInWithCredentials -> signInWithCredentials()
+            is LoginIntent.SetUsername -> _state.update { it.copy(username = intent.username, error = null) }
+            is LoginIntent.SetPassword -> _state.update { it.copy(password = intent.password, error = null) }
+            is LoginIntent.SetRememberName -> _state.update { it.copy(rememberName = intent.enabled) }
             LoginIntent.NavigateToSupport -> onNavigateToSupportCallback()
         }
     }
 
     private fun signIn() {
-        if (_loginState.value is LoginState.Loading) return
+        if (_state.value.isLoading) return
         scope.launch {
-            _loginState.value = LoginState.Loading
+            _state.update { it.copy(isLoading = true, error = null) }
             authRepository.signInWithSso()
                 .onSuccess { onLoginSuccessCallback() }
-                .onFailure { _loginState.value = LoginState.Error(it.message ?: "Sign-in failed") }
+                .onFailure { _state.update { s -> s.copy(isLoading = false, error = LoginError.SignInFailed) } }
+        }
+    }
+
+    private fun signInWithCredentials() {
+        if (_state.value.isLoading) return
+        if (_state.value.username.isBlank() || _state.value.password.isBlank()) {
+            _state.update { it.copy(error = LoginError.CredentialsRequired) }
+            return
+        }
+        scope.launch {
+            _state.update { it.copy(isLoading = true, error = null) }
+            authRepository.signInWithUsernamePassword(_state.value.username, _state.value.password)
+                .onSuccess { onLoginSuccessCallback() }
+                .onFailure { _state.update { s -> s.copy(isLoading = false, error = LoginError.SignInFailed) } }
         }
     }
 }
