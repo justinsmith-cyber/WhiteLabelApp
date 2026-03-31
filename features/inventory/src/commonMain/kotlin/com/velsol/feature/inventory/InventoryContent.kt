@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -109,11 +110,17 @@ fun InventoryContent(
 
         // Stable key by SKU prevents full list rebind when items are added, removed, or reordered.
         items(items = state.items, key = { it.sku }) { item ->
+            val sku = item.sku
+            // Per-row stable onClick: same SKU + stable component keeps click lambda instance
+            // identical across recompositions driven only by other list/header state.
+            val onItemClick = remember(sku, component) {
+                { component.onIntent(InventoryListIntent.SelectItem(sku)) }
+            }
             InventoryCard(
                 item = item,
                 primary = primary,
                 secondary = secondary,
-                onClick = { component.onIntent(InventoryListIntent.SelectItem(item.sku)) },
+                onClick = onItemClick,
             )
         }
     }
