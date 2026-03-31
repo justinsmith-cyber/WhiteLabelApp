@@ -54,7 +54,7 @@ fun InventoryDetailContent(
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
 
-    val stockUiModel = item.stockLevel.toUiModel(secondary)
+    val stockUiModel = item.stockLevel.toUiModel(secondary, MaterialTheme.colorScheme.error)
     val statusColor = stockUiModel.color
     val statusLabel = stockUiModel.label
 

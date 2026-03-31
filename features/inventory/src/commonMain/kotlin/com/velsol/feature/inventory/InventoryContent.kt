@@ -138,7 +138,8 @@ private fun InventoryCard(
     secondary: Color,
     onClick: () -> Unit,
 ) {
-    val (statusLabel, statusColor) = item.stockLevel.toUiModel(secondary)
+    val (statusLabel, statusColor) =
+        item.stockLevel.toUiModel(secondary, MaterialTheme.colorScheme.error)
 
     Card(
         modifier = Modifier.fillMaxWidth(),

@@ -177,7 +177,8 @@ private fun StatChip(label: String, containerColor: Color, contentColor: Color) 
 
 @Composable
 private fun CertificationCard(cert: CertRecord, secondary: Color, onClick: () -> Unit) {
-    val (statusLabel, statusColor) = cert.status.toUiModel(secondary)
+    val (statusLabel, statusColor) =
+        cert.status.toUiModel(secondary, MaterialTheme.colorScheme.error)
 
     Card(
         modifier = Modifier.fillMaxWidth(),

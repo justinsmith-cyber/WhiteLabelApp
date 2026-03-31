@@ -1,6 +1,5 @@
 package com.velsol.feature.inventory
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.velsol.feature.inventory.generated.resources.Res
@@ -11,9 +10,12 @@ import org.jetbrains.compose.resources.stringResource
 
 data class StockLevelUiModel(val label: String, val color: Color)
 
-/** Maps a [StockLevel] to its display label and brand-aware color for use in UI. */
+/**
+ * Maps a [StockLevel] to its display label and brand-aware color for use in UI.
+ * Callers pass [errorColor] from the composable surface so this stays free of MaterialTheme for colors.
+ */
 @Composable
-fun StockLevel.toUiModel(secondaryColor: Color): StockLevelUiModel = when (this) {
+fun StockLevel.toUiModel(secondaryColor: Color, errorColor: Color): StockLevelUiModel = when (this) {
     StockLevel.InStock -> StockLevelUiModel(
         label = stringResource(Res.string.in_stock),
         color = secondaryColor,
@@ -24,6 +26,6 @@ fun StockLevel.toUiModel(secondaryColor: Color): StockLevelUiModel = when (this)
     )
     StockLevel.OutOfStock -> StockLevelUiModel(
         label = stringResource(Res.string.out_of_stock),
-        color = MaterialTheme.colorScheme.error,
+        color = errorColor,
     )
 }

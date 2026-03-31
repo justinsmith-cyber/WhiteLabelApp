@@ -61,7 +61,8 @@ fun CertificationDetailContent(
                 CircularProgressIndicator(color = primary)
             }
         } else {
-            val (statusLabel, statusColor) = cert.status.toUiModel(secondary)
+            val (statusLabel, statusColor) =
+                cert.status.toUiModel(secondary, MaterialTheme.colorScheme.error)
 
             Column(
                 modifier = Modifier
