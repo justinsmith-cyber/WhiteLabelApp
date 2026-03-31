@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -96,7 +97,7 @@ fun RootContent(
                     }
                     Scaffold(
                         modifier = Modifier.weight(1f).fillMaxHeight(),
-                        contentWindowInsets = WindowInsets(0),
+                        contentWindowInsets = WindowInsets.safeDrawing,
                         bottomBar = {
                             if (showNavigation && !useSideNavigation) {
                                 AppNavigationBar(
