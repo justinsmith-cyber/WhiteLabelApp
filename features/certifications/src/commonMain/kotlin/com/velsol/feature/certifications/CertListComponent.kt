@@ -2,12 +2,16 @@ package com.velsol.feature.certifications
 
 import kotlinx.coroutines.flow.StateFlow
 
-data class CertListState(
-    val certs: List<CertRecord> = emptyList(),
-    val isLoading: Boolean = false,
-    val activeCount: Int = 0,
-    val expiringCount: Int = 0,
-)
+sealed interface CertListState {
+    data object Loading : CertListState
+
+    data class Content(
+        val certs: List<CertRecord>,
+        val activeCount: Int,
+        val expiringCount: Int,
+        val isRefreshing: Boolean = false,
+    ) : CertListState
+}
 
 interface CertListComponent {
     val state: StateFlow<CertListState>

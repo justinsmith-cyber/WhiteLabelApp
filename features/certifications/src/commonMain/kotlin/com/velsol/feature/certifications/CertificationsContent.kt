@@ -42,13 +42,35 @@ fun CertificationsContent(
     val secondary = Color(brandConfig.secondaryColorArgb)
     val state by component.state.collectAsState()
 
-    if (state.isLoading && state.certs === mockCertifications) {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = primary)
+    when (val currentState = state) {
+        is CertListState.Loading -> {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = primary)
+            }
         }
-        return
-    }
 
+        is CertListState.Content -> {
+            CertificationsListContent(
+                state = currentState,
+                primary = primary,
+                onPrimary = onPrimary,
+                secondary = secondary,
+                onSelectCert = component::onCertSelected,
+                modifier = modifier,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CertificationsListContent(
+    state: CertListState.Content,
+    primary: Color,
+    onPrimary: Color,
+    secondary: Color,
+    onSelectCert: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
@@ -110,7 +132,7 @@ fun CertificationsContent(
             CertificationCard(
                 cert = cert,
                 secondary = secondary,
-                onClick = { component.onCertSelected(cert.name) },
+                onClick = { onSelectCert(cert.name) },
             )
         }
     }

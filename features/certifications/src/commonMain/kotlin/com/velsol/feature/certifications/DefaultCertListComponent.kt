@@ -21,14 +21,7 @@ class DefaultCertListComponent internal constructor(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    private val _state = MutableStateFlow(
-        CertListState(
-            certs = mockCertifications,
-            isLoading = false,
-            activeCount = mockCertifications.count { it.status == CertStatus.Active },
-            expiringCount = mockCertifications.count { it.status == CertStatus.Expiring },
-        ),
-    )
+    private val _state = MutableStateFlow<CertListState>(CertListState.Loading)
     override val state: StateFlow<CertListState> = _state.asStateFlow()
 
     init {
@@ -38,16 +31,16 @@ class DefaultCertListComponent internal constructor(
 
     private fun loadCertifications() {
         scope.launch {
-            _state.update { it.copy(isLoading = true) }
-            val loadedCerts = getCertifications()
-            _state.update {
-                it.copy(
-                    certs = loadedCerts,
-                    isLoading = false,
-                    activeCount = loadedCerts.count { cert -> cert.status == CertStatus.Active },
-                    expiringCount = loadedCerts.count { cert -> cert.status == CertStatus.Expiring },
-                )
+            // Mark as refreshing if already loaded so the UI can show a subtle indicator.
+            _state.update { current ->
+                if (current is CertListState.Content) current.copy(isRefreshing = true) else CertListState.Loading
             }
+            val loadedCerts = getCertifications()
+            _state.value = CertListState.Content(
+                certs = loadedCerts,
+                activeCount = loadedCerts.count { it.status == CertStatus.Active },
+                expiringCount = loadedCerts.count { it.status == CertStatus.Expiring },
+            )
         }
     }
 
