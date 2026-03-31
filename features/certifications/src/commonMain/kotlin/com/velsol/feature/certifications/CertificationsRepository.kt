@@ -2,11 +2,14 @@ package com.velsol.feature.certifications
 
 import io.ktor.client.HttpClient
 
-internal interface CertificationsRepository {
+interface CertificationsRepository {
     suspend fun getCertifications(): List<CertRecord>
 
     suspend fun getCertification(name: String): CertRecord?
 }
+
+fun createCertificationsRepository(httpClient: HttpClient, apiBaseUrl: String): CertificationsRepository =
+    DefaultCertificationsRepository(httpClient, apiBaseUrl)
 
 internal class DefaultCertificationsRepository(
     httpClient: HttpClient,

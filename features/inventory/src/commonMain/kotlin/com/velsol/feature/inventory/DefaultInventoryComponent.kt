@@ -11,11 +11,11 @@ import kotlinx.serialization.Serializable
 
 class DefaultInventoryComponent(
     componentContext: ComponentContext,
+    // Repository is injected by the caller (DefaultRootComponent via AppGraph) rather than constructed here.
+    repository: InventoryRepository,
 ) : InventoryComponent,
     ComponentContext by componentContext {
 
-    // Single repository instance shared across all child components in this sub-graph.
-    private val repository: InventoryRepository = DefaultInventoryRepository()
     private val getInventoryList = GetInventoryListUseCase(repository)
     private val getInventoryItem = GetInventoryItemUseCase(repository)
 

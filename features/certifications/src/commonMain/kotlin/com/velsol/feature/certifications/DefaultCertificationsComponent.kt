@@ -7,18 +7,15 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
-import io.ktor.client.HttpClient
 import kotlinx.serialization.Serializable
 
 class DefaultCertificationsComponent(
     componentContext: ComponentContext,
-    httpClient: HttpClient,
-    apiBaseUrl: String,
+    // Repository is injected by the caller (DefaultRootComponent via AppGraph) rather than constructed here.
+    repository: CertificationsRepository,
 ) : CertificationsComponent,
     ComponentContext by componentContext {
 
-    // Single repository instance shared across all child components in this sub-graph.
-    private val repository: CertificationsRepository = DefaultCertificationsRepository(httpClient, apiBaseUrl)
     private val getCertifications = GetCertificationsUseCase(repository)
     private val getCertification = GetCertificationUseCase(repository)
 

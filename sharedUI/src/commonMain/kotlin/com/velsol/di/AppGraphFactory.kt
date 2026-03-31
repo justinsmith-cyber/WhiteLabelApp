@@ -8,3 +8,5 @@ private object AppGraphHolder {
 }
 
 fun appBrandConfig(): BrandConfig = AppGraphHolder.graph.brandConfig
+
+fun appGraph(): AppGraph = AppGraphHolder.graph

@@ -1,10 +1,12 @@
 package com.velsol.feature.inventory
 
-internal interface InventoryRepository {
+interface InventoryRepository {
     fun getInventoryItems(): List<InventoryItem>
 
     fun getInventoryItem(sku: String): InventoryItem?
 }
+
+fun createInventoryRepository(): InventoryRepository = DefaultInventoryRepository()
 
 internal class DefaultInventoryRepository : InventoryRepository {
     override fun getInventoryItems(): List<InventoryItem> = mockInventory

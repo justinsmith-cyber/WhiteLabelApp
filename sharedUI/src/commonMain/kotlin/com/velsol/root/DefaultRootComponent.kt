@@ -6,8 +6,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
-import com.velsol.core.network.createHttpClient
-import com.velsol.di.appBrandConfig
+import com.velsol.di.appGraph
 import com.velsol.feature.certifications.CertificationsComponent
 import com.velsol.feature.certifications.DefaultCertificationsComponent
 import com.velsol.feature.home.DefaultHomeComponent
@@ -24,8 +23,8 @@ class DefaultRootComponent(
 ) : RootComponent,
     ComponentContext by componentContext {
 
-    private val brandConfig = appBrandConfig()
-    private val httpClient = createHttpClient()
+    private val graph = appGraph()
+    private val brandConfig = graph.brandConfig
 
     override val visibleTabs: List<RootComponent.Tab> = buildList {
         add(RootComponent.Tab.Home)
@@ -49,12 +48,14 @@ class DefaultRootComponent(
     override val certifications: CertificationsComponent =
         DefaultCertificationsComponent(
             componentContext = childContext("certifications"),
-            httpClient = httpClient,
-            apiBaseUrl = brandConfig.apiBaseUrl,
+            repository = graph.certificationsRepository,
         )
 
     override val inventory: InventoryComponent =
-        DefaultInventoryComponent(childContext("inventory"))
+        DefaultInventoryComponent(
+            componentContext = childContext("inventory"),
+            repository = graph.inventoryRepository,
+        )
 
     override fun onIntent(intent: RootIntent) {
         when (intent) {
