@@ -1,5 +1,6 @@
 package com.velsol.feature.home
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.Role
@@ -185,7 +188,9 @@ private fun HeroBrandCard(
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 42.sp,
-                modifier = Modifier.clickable(role = Role.Button) { onLogoTap() },
+                modifier = Modifier
+                    .pointerHoverIcon(PointerIcon.Hand)
+                    .clickable(role = Role.Button) { onLogoTap() },
             )
             Spacer(Modifier.height(6.dp))
             Text(
@@ -415,7 +420,9 @@ private fun ActionsRow(
                 .semantics { stateDescription = themeState },
             onClick = onToggleDarkMode,
         ) {
-            Icon(vectorResource(themeIcon), contentDescription = null)
+            Crossfade(targetState = themeIcon) { icon ->
+                Icon(vectorResource(icon), contentDescription = null)
+            }
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(stringResource(Res.string.theme))
         }
