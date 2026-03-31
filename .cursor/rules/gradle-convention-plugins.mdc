@@ -77,6 +77,9 @@ android { namespace = "com.velsol.core.util" }
 - Never add `decompose` or `decompose-compose` to a feature module — they are provided as `api` by `whitelabel.kmp.compose`.
 - Always set `compose.resources { packageOfResClass = "com.velsol.feature.<name>.generated.resources" }` in every feature module that owns Compose resources.
 - To change SDK versions or JVM targets globally, edit `build-logic/src/main/kotlin/whitelabel.kmp.library.gradle.kts`.
+  - `compileSdk` controls API access during compilation; some AndroidX libraries require a minimum `compileSdk` — check release notes before bumping.
+  - `targetSdk` determines runtime behavior changes on the device; the Play Store requires periodic bumps, but each Android release introduces mandatory behavior changes — read the [Android version behavior-changes docs](https://developer.android.com/about/versions) before raising `targetSdk`.
+  - Never raise `minSdk` without explicit user approval.
 - To add a new shared Compose dependency, add it to `whitelabel.kmp.compose.gradle.kts`, not to individual modules.
 - New Gradle plugin JARs needed by convention plugins must be added as `compileOnly` deps in `build-logic/build.gradle.kts` and as library entries (not plugin aliases) in `gradle/libs.versions.toml`.
 - **`whitelabel.detekt`** is applied inside `whitelabel.kmp.library` and `whitelabel.android.library` (after Kotlin/Android). **Shell apps** (`androidApp`, `desktopApp`) and **JVM-only** modules (`brand-parity-tests`) must list **`id("whitelabel.detekt")` last** so Detekt’s Android integration does not run before the Kotlin Android target exists.

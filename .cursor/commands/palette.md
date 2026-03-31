@@ -80,6 +80,7 @@ Scan `sharedUI/` and `features/*/src/commonMain/` — root UI, feature screens, 
 - Missing `Modifier.clearAndSetSemantics {}` on decorative composables that pollute the semantic tree
 - Missing `stateDescription` on buttons that change behavior (e.g. disabled while loading)
 - Color-only feedback with no shape or text fallback (color contrast issues for colorblind users)
+- Android views displaying sensitive user data (tokens, PII, financial values) that lack `android:accessibilityDataSensitive="yes"` on API 34+ — prevents non-accessibility apps from scraping values via `AccessibilityService`
 
 **INTERACTION FEEDBACK:**
 - Buttons that trigger async work (network, DB) with no loading or disabled state
@@ -94,6 +95,13 @@ Scan `sharedUI/` and `features/*/src/commonMain/` — root UI, feature screens, 
 - Dynamic text that updates without sensible animation when it would reduce jank perception
 - Missing subtle entrance animations for new list items or tab content
 - Button disabled states that are visually identical to the enabled state (contrast too low)
+
+**CHROMEOS & LARGE SCREEN INPUT:**
+- Custom `clickable` surfaces with no right-click (`onSecondaryClick`) handling where a context menu would be natural
+- Missing hover tooltip (`TooltipBox` / `PlainTooltip`) on icon-only controls when running on Desktop JVM or ChromeOS
+- Key event handlers not responding to Enter/arrow keys for list navigation (use `Modifier.onKeyEvent` for D-pad / keyboard)
+- Drag-and-drop affordances absent on surfaces that rearrange ordered items on Desktop JVM
+- Ctrl / Ctrl-Shift keyboard shortcuts missing for primary actions that power users repeat frequently
 
 **HELPFUL AFFORDANCES:**
 - Primary actions with no short helper text or tooltip where the label alone is ambiguous
@@ -174,6 +182,9 @@ Create a PR via `jj git push` + `jj bookmark create` with:
 
 🎨 Add `contentDescription` to icon-only controls via `Modifier.semantics`  
 🎨 Add `stateDescription` when disabled/loading changes meaning  
+🎨 Mark sensitive Compose text nodes with `accessibilityDataSensitive` on Android 34+ to block scraping by non-accessibility apps  
+🎨 Add hover tooltip (`PlainTooltip`) to ambiguous icon-only controls on Desktop JVM / ChromeOS  
+🎨 Handle Enter/arrow keys with `Modifier.onKeyEvent` for list and form navigation  
 🎨 Wrap abrupt content swaps in `AnimatedVisibility` or `Crossfade`  
 🎨 Add `animateContentSize()` when expanding/collapsing panels  
 🎨 Add helper text for non-obvious primary actions  

@@ -20,6 +20,7 @@ Your mission: find **ONE** outdated dependency in `gradle/libs.versions.toml`, u
 ⚠️ **Ask first:**
 - Bumping the `kotlin` version (requires Compose Multiplatform compatibility check — see Step 2)
 - Bumping a library that affects the Android Gradle Plugin (`agp`) version
+- Upgrading `targetSdk` or `compileSdk` (read the [Android SDK behavior-changes docs](https://developer.android.com/about/versions) for the target release before touching either — Play Store requires periodic `targetSdk` bumps, but each release brings mandatory behavior changes to review)
 - Upgrading a library that has known breaking API changes in its changelog
 
 🚫 **Never do:**
@@ -77,13 +78,15 @@ Read `gradle/libs.versions.toml` in full. Build a mental map of all version entr
 | Priority | Library group | Why |
 |----------|--------------|-----|
 | 🔴 High  | `kotlin` | Security patches, compiler improvements — but **requires Compose check** |
-| 🔴 High  | `androidx.*` | Google's support library ecosystem; security and API stability |
+| 🔴 High  | `agp` | Android Gradle Plugin; check AGP ↔ Android Studio ↔ SDK compatibility table before bumping |
+| 🔴 High  | `androidx.*` | Google's support library ecosystem; security and API stability; some libs require a minimum `compileSdk` |
 | 🔴 High  | `ktor` | Networking; security fixes land here |
 | 🔴 High  | `kotlinx-coroutines` | Coroutine runtime; fixes for structured concurrency bugs |
 | 🟡 Medium | `kotlinx-serialization` | Commonly updated alongside Kotlin |
 | 🟡 Medium | `room` | Database schema stability matters; check migration notes |
 | 🟠 Lower | Other `kotlinx.*` libraries | Lower churn |
 | ⬜ Skip  | `compose` plugin version | **Never bump independently** — must match Kotlin via compatibility table |
+| ⬜ Ask first | `targetSdk` / `compileSdk` | Behavior changes per Android release; Play Store deadline drives `targetSdk`; some AndroidX versions require a higher `compileSdk` |
 
 For each candidate, look up the latest stable version from its official source:
 - **kotlinx.***: https://github.com/Kotlin/kotlinx.coroutines/releases (and equivalent repos)
@@ -207,6 +210,8 @@ e.g. `bumper/ktor-3.1.2`
 ❌ Changing client selection in `settings.gradle.kts` or adding unrelated dependency bumps in the same PR  
 ❌ Applying source-level API migration fixes larger than ~10 lines without user approval  
 ❌ Bumping AGP without checking the Android Gradle Plugin ↔ Android Studio compatibility matrix  
+❌ Bumping `targetSdk` without reading the full behavior-changes section for that Android release  
+❌ Bumping `compileSdk` without verifying all AndroidX libraries used meet the new minimum compileSdk requirement  
 
 ---
 

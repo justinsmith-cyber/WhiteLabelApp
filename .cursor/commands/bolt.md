@@ -99,6 +99,7 @@ Your journal is **NOT a log** — only add entries for critical learnings that w
 - `Image` / `Painter` resources not cached across recompositions — wrap in `remember`
 - Large `Bitmap` objects created from resources without downsampling on Android
 - Coroutine `Flow` operators (e.g. `distinctUntilChanged`, `debounce`) missing on high-frequency event streams
+- `Cursor` or other `Closeable` objects (Room raw queries, `ContentResolver` queries) not closed via Kotlin's `.use {}` block — leaks resources and can exhaust SQLite connection pools on Android
 
 ---
 
@@ -189,6 +190,7 @@ Create a PR via `jj git push` with:
 ⚡ Add `remember(painter)` around an `Image` resource load to prevent repeated decoding  
 ⚡ Guard a `withFrameNanos` loop with an `isRunning` flag to stop it when idle  
 ⚡ Memoize expensive derived values that are read on every recomposition  
+⚡ Wrap `Cursor` and `Closeable` objects in `.use {}` to guarantee release and prevent SQLite connection leaks  
 
 ---
 

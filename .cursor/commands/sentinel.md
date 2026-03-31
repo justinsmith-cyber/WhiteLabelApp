@@ -101,6 +101,7 @@ Audit `core/`, `features/`, `sharedUI/`, `androidApp/`, `desktopApp/`, shell app
 - Ensure Desktop JVM local files use restrictive permissions when storing sensitive data
 - Add debug-only guards so secrets and tokens never log in release builds
 - Add `require()` / `check()` at domain or repository boundaries for invariants that must hold
+- On Android API 34+ (Android 14), apply `android:accessibilityDataSensitive="yes"` to views that display tokens, PII, or financial values — this blocks non-accessibility apps from reading them via `AccessibilityService` even when the user has granted accessibility permissions to a rogue app
 
 ---
 
@@ -191,6 +192,7 @@ Create a PR via `jj git push` + `jj bookmark create` with:
 🛡️ Set restrictive Desktop JVM file permissions when writing user-specific data  
 🛡️ Replace raw `println` of models with redacted logging in debug only  
 🛡️ Add invariants with `check`/`require` at repository boundaries  
+🛡️ Apply `android:accessibilityDataSensitive="yes"` to views displaying tokens, PII, or financial values on Android 14+ (API 34) — blocks rogue apps with AccessibilityService permissions from scraping sensitive data  
 🛡️ Ensure certificate pinning or TLS expectations match the product threat model (only when requested)  
 🛡️ Add Detekt rules or reviews to block obvious secret patterns in source  
 
