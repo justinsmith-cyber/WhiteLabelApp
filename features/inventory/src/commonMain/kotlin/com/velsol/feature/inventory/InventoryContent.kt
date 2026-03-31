@@ -28,12 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.velsol.feature.inventory.generated.resources.Res
-import com.velsol.feature.inventory.generated.resources.in_stock
 import com.velsol.feature.inventory.generated.resources.in_stock_count
 import com.velsol.feature.inventory.generated.resources.items_tracked
-import com.velsol.feature.inventory.generated.resources.low_stock
 import com.velsol.feature.inventory.generated.resources.low_stock_count
-import com.velsol.feature.inventory.generated.resources.out_of_stock
 import com.velsol.feature.inventory.generated.resources.parts_materials
 import com.velsol.feature.inventory.generated.resources.plumbing_inventory
 import com.velsol.feature.inventory.generated.resources.quantity_unit
@@ -141,16 +138,7 @@ private fun InventoryCard(
     secondary: Color,
     onClick: () -> Unit,
 ) {
-    val statusLabel = when (item.stockLevel) {
-        StockLevel.InStock -> stringResource(Res.string.in_stock)
-        StockLevel.LowStock -> stringResource(Res.string.low_stock)
-        StockLevel.OutOfStock -> stringResource(Res.string.out_of_stock)
-    }
-    val statusColor = when (item.stockLevel) {
-        StockLevel.InStock -> secondary
-        StockLevel.LowStock -> Color(0xFFF59E0B)
-        StockLevel.OutOfStock -> MaterialTheme.colorScheme.error
-    }
+    val (statusLabel, statusColor) = item.stockLevel.toUiModel(secondary)
 
     Card(
         modifier = Modifier.fillMaxWidth(),

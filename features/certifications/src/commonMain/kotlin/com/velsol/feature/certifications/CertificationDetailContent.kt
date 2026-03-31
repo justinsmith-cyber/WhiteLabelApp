@@ -52,11 +52,7 @@ fun CertificationDetailContent(
 
     val cert = state.cert ?: return
 
-    val (statusColor, statusLabel) = when (cert.status) {
-        CertStatus.Active -> secondary to "Active"
-        CertStatus.Expiring -> Color(0xFFF59E0B) to "Expiring"
-        CertStatus.Expired -> MaterialTheme.colorScheme.error to "Expired"
-    }
+    val (statusLabel, statusColor) = cert.status.toUiModel(secondary)
 
     Column(
         modifier = modifier
