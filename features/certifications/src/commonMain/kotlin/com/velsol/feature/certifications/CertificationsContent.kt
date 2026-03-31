@@ -33,6 +33,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.velsol.feature.certifications.generated.resources.Res
 import com.velsol.feature.certifications.generated.resources.active_count_label
 import com.velsol.feature.certifications.generated.resources.active_total_summary
@@ -47,6 +51,25 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CertificationsContent(
+    component: CertificationsComponent,
+    modifier: Modifier = Modifier,
+) {
+    val stack by component.stack.subscribeAsState()
+    // Keep feature-internal child routing inside this module to avoid leaking it to RootContent.
+    Children(
+        stack = stack,
+        modifier = modifier,
+        animation = stackAnimation(fade()),
+    ) { child ->
+        when (val instance = child.instance) {
+            is CertificationsComponent.Child.ListChild -> CertListContent(component = instance.component)
+            is CertificationsComponent.Child.DetailChild -> CertificationDetailContent(component = instance.component)
+        }
+    }
+}
+
+@Composable
+fun CertListContent(
     component: CertListComponent,
     modifier: Modifier = Modifier,
 ) {

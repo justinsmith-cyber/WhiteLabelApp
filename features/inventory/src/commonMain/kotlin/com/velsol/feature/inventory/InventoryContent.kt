@@ -28,6 +28,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.velsol.feature.inventory.generated.resources.Res
 import com.velsol.feature.inventory.generated.resources.in_stock
 import com.velsol.feature.inventory.generated.resources.in_stock_count
@@ -45,6 +49,25 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun InventoryContent(
+    component: InventoryComponent,
+    modifier: Modifier = Modifier,
+) {
+    val stack by component.stack.subscribeAsState()
+    // Keep feature-internal child routing inside this module to avoid leaking it to RootContent.
+    Children(
+        stack = stack,
+        modifier = modifier,
+        animation = stackAnimation(fade()),
+    ) { child ->
+        when (val instance = child.instance) {
+            is InventoryComponent.Child.ListChild -> InventoryListContent(component = instance.component)
+            is InventoryComponent.Child.DetailChild -> InventoryDetailContent(component = instance.component)
+        }
+    }
+}
+
+@Composable
+fun InventoryListContent(
     component: InventoryListComponent,
     modifier: Modifier = Modifier,
 ) {

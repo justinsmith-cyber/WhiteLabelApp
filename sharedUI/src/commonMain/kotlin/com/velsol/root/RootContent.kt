@@ -31,13 +31,9 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.velsol.feature.certifications.CertificationDetailContent
-import com.velsol.feature.certifications.CertificationsComponent
 import com.velsol.feature.certifications.CertificationsContent
 import com.velsol.feature.home.HomeContent
-import com.velsol.feature.inventory.InventoryComponent
 import com.velsol.feature.inventory.InventoryContent
-import com.velsol.feature.inventory.InventoryDetailContent
 import com.velsol.generated.resources.Res
 import com.velsol.generated.resources.ic_tab_certifications
 import com.velsol.generated.resources.ic_tab_home
@@ -213,43 +209,15 @@ private fun RootTabScenes(
             }
         }
 
-        RootComponent.Tab.Certifications -> {
-            val certsStack by component.certifications.stack.subscribeAsState()
-            Children(
-                stack = certsStack,
-                modifier = modifier,
-                animation = stackAnimation(fade()),
-            ) { child ->
-                when (val instance = child.instance) {
-                    is CertificationsComponent.Child.ListChild -> CertificationsContent(
-                        component = instance.component,
-                    )
+        RootComponent.Tab.Certifications -> CertificationsContent(
+            component = component.certifications,
+            modifier = modifier,
+        )
 
-                    is CertificationsComponent.Child.DetailChild -> CertificationDetailContent(
-                        component = instance.component,
-                    )
-                }
-            }
-        }
-
-        RootComponent.Tab.Inventory -> {
-            val inventoryStack by component.inventory.stack.subscribeAsState()
-            Children(
-                stack = inventoryStack,
-                modifier = modifier,
-                animation = stackAnimation(fade()),
-            ) { child ->
-                when (val instance = child.instance) {
-                    is InventoryComponent.Child.ListChild -> InventoryContent(
-                        component = instance.component,
-                    )
-
-                    is InventoryComponent.Child.DetailChild -> InventoryDetailContent(
-                        component = instance.component,
-                    )
-                }
-            }
-        }
+        RootComponent.Tab.Inventory -> InventoryContent(
+            component = component.inventory,
+            modifier = modifier,
+        )
     }
 }
 
