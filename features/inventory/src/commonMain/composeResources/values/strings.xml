@@ -11,6 +11,7 @@
     <string name="sku_label">SKU: %1$s</string>
     <string name="quantity_unit">%1$d %2$s</string>
     <string name="item_detail">Item Detail</string>
+    <string name="navigate_back">Navigate back</string>
     <string name="back_arrow">←</string>
     <string name="sku">SKU</string>
     <string name="category">Category</string>

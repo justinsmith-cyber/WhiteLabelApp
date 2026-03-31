@@ -24,6 +24,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +33,7 @@ import com.velsol.feature.inventory.generated.resources.Res
 import com.velsol.feature.inventory.generated.resources.back_arrow
 import com.velsol.feature.inventory.generated.resources.category
 import com.velsol.feature.inventory.generated.resources.item_detail
+import com.velsol.feature.inventory.generated.resources.navigate_back
 import com.velsol.feature.inventory.generated.resources.quantity
 import com.velsol.feature.inventory.generated.resources.quantity_unit
 import com.velsol.feature.inventory.generated.resources.sku
@@ -66,7 +69,13 @@ fun InventoryDetailContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            IconButton(onClick = { component.onIntent(InventoryDetailIntent.Back) }) {
+            val navigateBackDesc = stringResource(Res.string.navigate_back)
+            IconButton(
+                onClick = { component.onIntent(InventoryDetailIntent.Back) },
+                modifier = Modifier.clearAndSetSemantics {
+                    contentDescription = navigateBackDesc
+                },
+            ) {
                 Text(
                     text = stringResource(Res.string.back_arrow),
                     style = MaterialTheme.typography.titleLarge,

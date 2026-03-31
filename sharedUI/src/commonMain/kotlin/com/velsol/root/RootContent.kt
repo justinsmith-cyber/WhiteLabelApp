@@ -147,7 +147,6 @@ private fun AppNavigationBar(
                 icon = {
                     TabIcon(
                         iconRes = icon,
-                        label = label,
                         isSelected = selectedTab == tab,
                         color = primary,
                     )
@@ -184,7 +183,6 @@ private fun AppNavigationRail(
                 icon = {
                     TabIcon(
                         iconRes = icon,
-                        label = label,
                         isSelected = selectedTab == tab,
                         color = primary,
                     )
@@ -263,10 +261,10 @@ private fun RootTabScenes(
 }
 
 @Composable
-private fun TabIcon(iconRes: DrawableResource, label: String, isSelected: Boolean, color: Color) {
+private fun TabIcon(iconRes: DrawableResource, isSelected: Boolean, color: Color) {
     Icon(
         painter = painterResource(iconRes),
-        contentDescription = label,
+        contentDescription = null, // NavigationBarItem/NavigationRailItem already provides semantics via label
         modifier = Modifier.size(24.dp),
         tint = if (isSelected) color else MaterialTheme.colorScheme.onSurfaceVariant,
     )
