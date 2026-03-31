@@ -47,10 +47,26 @@ import coil3.compose.AsyncImage
 import com.velsol.core.domain.brand.FeatureToggles
 import com.velsol.theme.LocalBrandConfig
 import com.velsol.feature.home.generated.resources.Res
+import com.velsol.feature.home.generated.resources.accent_color
+import com.velsol.feature.home.generated.resources.api_label
+import com.velsol.feature.home.generated.resources.brand_identity
+import com.velsol.feature.home.generated.resources.color_swatch_description
+import com.velsol.feature.home.generated.resources.dark_mode
+import com.velsol.feature.home.generated.resources.feature_status_description
+import com.velsol.feature.home.generated.resources.hvac_certifications
 import com.velsol.feature.home.generated.resources.ic_dark_mode
 import com.velsol.feature.home.generated.resources.ic_light_mode
+import com.velsol.feature.home.generated.resources.light_mode
 import com.velsol.feature.home.generated.resources.open_github
+import com.velsol.feature.home.generated.resources.platform_features
+import com.velsol.feature.home.generated.resources.plumbing_inventory
+import com.velsol.feature.home.generated.resources.primary_color
+import com.velsol.feature.home.generated.resources.status_active
+import com.velsol.feature.home.generated.resources.status_inactive
+import com.velsol.feature.home.generated.resources.support_label
 import com.velsol.feature.home.generated.resources.theme
+import com.velsol.feature.home.generated.resources.whitelabel_platform
+import com.velsol.feature.home.generated.resources.work_item
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -146,7 +162,7 @@ private fun HeroBrandCard(
                             .background(secondary),
                     )
                     Text(
-                        text = "WHITELABEL PLATFORM",
+                        text = stringResource(Res.string.whitelabel_platform),
                         color = onPrimary.copy(alpha = 0.65f),
                         style = MaterialTheme.typography.labelSmall,
                         letterSpacing = 2.sp,
@@ -180,7 +196,7 @@ private fun HeroBrandCard(
             )
             Spacer(Modifier.height(10.dp))
             Text(
-                text = "Work item: $taskLabel",
+                text = stringResource(Res.string.work_item, taskLabel),
                 color = onPrimary.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.labelLarge,
             )
@@ -207,7 +223,7 @@ private fun FeaturesSection(features: FeatureToggles, primary: Color) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = "Platform Features",
+            text = stringResource(Res.string.platform_features),
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 4.dp),
@@ -218,13 +234,13 @@ private fun FeaturesSection(features: FeatureToggles, primary: Color) {
         ) {
             FeatureTile(
                 modifier = Modifier.weight(1f),
-                label = "HVAC Certifications",
+                label = stringResource(Res.string.hvac_certifications),
                 isEnabled = features.hasHvacCertifications,
                 activeColor = primary,
             )
             FeatureTile(
                 modifier = Modifier.weight(1f),
-                label = "Plumbing Inventory",
+                label = stringResource(Res.string.plumbing_inventory),
                 isEnabled = features.hasPlumbingInventory,
                 activeColor = primary,
             )
@@ -251,12 +267,17 @@ private fun FeatureTile(
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
     }
 
-    val statusText = if (isEnabled) "Active" else "Inactive"
+    val statusText = if (isEnabled) {
+        stringResource(Res.string.status_active)
+    } else {
+        stringResource(Res.string.status_inactive)
+    }
+    val featureStatusDesc = stringResource(Res.string.feature_status_description, label, statusText)
     val indicator = if (isEnabled) "●" else "○"
 
     Card(
         modifier = modifier.clearAndSetSemantics {
-            contentDescription = "$label is $statusText"
+            contentDescription = featureStatusDesc
         },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
@@ -303,17 +324,17 @@ private fun BrandIdentityCard(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = "Brand Identity",
+                text = stringResource(Res.string.brand_identity),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                ColorSwatch(label = "Primary", color = primary)
-                ColorSwatch(label = "Accent", color = secondary)
+                ColorSwatch(label = stringResource(Res.string.primary_color), color = primary)
+                ColorSwatch(label = stringResource(Res.string.accent_color), color = secondary)
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            BrandInfoRow(label = "Support", value = supportEmail)
-            BrandInfoRow(label = "API", value = apiBaseUrl)
+            BrandInfoRow(label = stringResource(Res.string.support_label), value = supportEmail)
+            BrandInfoRow(label = stringResource(Res.string.api_label), value = apiBaseUrl)
         }
     }
 }
@@ -327,11 +348,12 @@ private fun ColorSwatch(label: String, color: Color) {
         val packed = (r shl 16) or (g shl 8) or b
         "#" + packed.toString(16).uppercase().padStart(6, '0')
     }
+    val swatchDesc = stringResource(Res.string.color_swatch_description, label, hex)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.clearAndSetSemantics {
-            contentDescription = "$label color swatch, hex $hex"
+            contentDescription = swatchDesc
         },
     ) {
         Box(
@@ -382,7 +404,7 @@ private fun ActionsRow(
     onOpenGithub: () -> Unit,
 ) {
     val themeIcon = if (isDark) Res.drawable.ic_light_mode else Res.drawable.ic_dark_mode
-    val themeState = if (isDark) "Dark mode" else "Light mode"
+    val themeState = if (isDark) stringResource(Res.string.dark_mode) else stringResource(Res.string.light_mode)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
