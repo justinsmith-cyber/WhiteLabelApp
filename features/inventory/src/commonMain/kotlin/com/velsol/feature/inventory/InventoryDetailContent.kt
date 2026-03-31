@@ -27,7 +27,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.velsol.feature.inventory.generated.resources.Res
+import com.velsol.feature.inventory.generated.resources.back_arrow
+import com.velsol.feature.inventory.generated.resources.category
+import com.velsol.feature.inventory.generated.resources.in_stock
+import com.velsol.feature.inventory.generated.resources.item_detail
+import com.velsol.feature.inventory.generated.resources.low_stock
+import com.velsol.feature.inventory.generated.resources.out_of_stock
+import com.velsol.feature.inventory.generated.resources.quantity
+import com.velsol.feature.inventory.generated.resources.quantity_unit
+import com.velsol.feature.inventory.generated.resources.sku
+import com.velsol.feature.inventory.generated.resources.stock_level
 import com.velsol.theme.LocalBrandConfig
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun InventoryDetailContent(
@@ -42,10 +54,14 @@ fun InventoryDetailContent(
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
 
+    val inStockLabel = stringResource(Res.string.in_stock)
+    val lowStockLabel = stringResource(Res.string.low_stock)
+    val outOfStockLabel = stringResource(Res.string.out_of_stock)
+
     val (statusColor, statusLabel) = when (item.stockLevel) {
-        StockLevel.InStock -> secondary to "In Stock"
-        StockLevel.LowStock -> Color(0xFFF59E0B) to "Low Stock"
-        StockLevel.OutOfStock -> MaterialTheme.colorScheme.error to "Out of Stock"
+        StockLevel.InStock -> secondary to inStockLabel
+        StockLevel.LowStock -> Color(0xFFF59E0B) to lowStockLabel
+        StockLevel.OutOfStock -> MaterialTheme.colorScheme.error to outOfStockLabel
     }
 
     Column(
@@ -61,13 +77,13 @@ fun InventoryDetailContent(
         ) {
             IconButton(onClick = { component.onIntent(InventoryDetailIntent.Back) }) {
                 Text(
-                    text = "←",
+                    text = stringResource(Res.string.back_arrow),
                     style = MaterialTheme.typography.titleLarge,
                     color = primary,
                 )
             }
             Text(
-                text = "Item Detail",
+                text = stringResource(Res.string.item_detail),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -116,14 +132,17 @@ fun InventoryDetailContent(
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                DetailRow(label = "SKU", value = item.sku)
+                DetailRow(label = stringResource(Res.string.sku), value = item.sku)
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                DetailRow(label = "Category", value = item.category)
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                DetailRow(label = "Quantity", value = "${item.quantity} ${item.unit}")
+                DetailRow(label = stringResource(Res.string.category), value = item.category)
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 DetailRow(
-                    label = "Stock Level",
+                    label = stringResource(Res.string.quantity),
+                    value = stringResource(Res.string.quantity_unit, item.quantity, item.unit),
+                )
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                DetailRow(
+                    label = stringResource(Res.string.stock_level),
                     value = statusLabel,
                     valueColor = statusColor,
                 )
