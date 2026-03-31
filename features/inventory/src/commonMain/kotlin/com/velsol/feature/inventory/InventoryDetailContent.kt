@@ -32,8 +32,11 @@ import androidx.compose.ui.unit.sp
 import com.velsol.feature.inventory.generated.resources.Res
 import com.velsol.feature.inventory.generated.resources.back_arrow
 import com.velsol.feature.inventory.generated.resources.category
+import com.velsol.feature.inventory.generated.resources.in_stock
 import com.velsol.feature.inventory.generated.resources.item_detail
+import com.velsol.feature.inventory.generated.resources.low_stock
 import com.velsol.feature.inventory.generated.resources.navigate_back
+import com.velsol.feature.inventory.generated.resources.out_of_stock
 import com.velsol.feature.inventory.generated.resources.quantity
 import com.velsol.feature.inventory.generated.resources.quantity_unit
 import com.velsol.feature.inventory.generated.resources.sku
@@ -54,7 +57,13 @@ fun InventoryDetailContent(
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
 
-    val stockUiModel = item.stockLevel.toUiModel(secondary, MaterialTheme.colorScheme.error)
+    val stockUiModel = item.stockLevel.toUiModel(
+        inStockLabel = stringResource(Res.string.in_stock),
+        lowStockLabel = stringResource(Res.string.low_stock),
+        outOfStockLabel = stringResource(Res.string.out_of_stock),
+        secondaryColor = secondary,
+        errorColor = MaterialTheme.colorScheme.error,
+    )
     val statusColor = stockUiModel.color
     val statusLabel = stockUiModel.label
 
