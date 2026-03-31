@@ -6,6 +6,7 @@ fun BrandConfig.sameBrandContentAs(other: BrandConfig): Boolean = appName == oth
     taskLabel == other.taskLabel &&
     apiBaseUrl == other.apiBaseUrl &&
     supportEmail == other.supportEmail &&
+    supportPhone == other.supportPhone &&
     primaryColorArgb == other.primaryColorArgb &&
     onPrimaryColorArgb == other.onPrimaryColorArgb &&
     secondaryColorArgb == other.secondaryColorArgb &&

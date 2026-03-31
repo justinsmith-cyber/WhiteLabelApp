@@ -14,6 +14,7 @@ class DefaultBrandConfig : BrandConfig {
     override val taskLabel = "Task"
     override val apiBaseUrl = "https://api.example.com"
     override val supportEmail = "support@example.com"
+    override val supportPhone = "+1 (800) 555-0100"
     override val primaryColorArgb = 0xFF6750A4L
     override val onPrimaryColorArgb = 0xFFFFFFFFL
     override val secondaryColorArgb = 0xFF00897BL

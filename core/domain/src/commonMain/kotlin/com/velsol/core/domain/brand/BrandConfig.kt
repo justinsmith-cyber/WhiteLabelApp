@@ -13,6 +13,7 @@ interface BrandConfig {
     val taskLabel: String
     val apiBaseUrl: String
     val supportEmail: String
+    val supportPhone: String
     val primaryColorArgb: Long
     val onPrimaryColorArgb: Long
     val secondaryColorArgb: Long

@@ -7,6 +7,8 @@ import com.velsol.feature.certifications.CertificationsRepository
 import com.velsol.feature.certifications.createCertificationsRepository
 import com.velsol.feature.inventory.InventoryRepository
 import com.velsol.feature.inventory.createInventoryRepository
+import com.velsol.feature.login.AuthRepository
+import com.velsol.feature.login.MockAuthRepository
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import io.ktor.client.HttpClient
@@ -17,6 +19,7 @@ interface AppGraph {
     val httpClient: HttpClient
     val certificationsRepository: CertificationsRepository
     val inventoryRepository: InventoryRepository
+    val authRepository: AuthRepository
 
     @Provides
     fun provideHttpClient(): HttpClient = createHttpClient()
@@ -27,4 +30,7 @@ interface AppGraph {
 
     @Provides
     fun provideInventoryRepository(): InventoryRepository = createInventoryRepository()
+
+    @Provides
+    fun provideAuthRepository(): AuthRepository = MockAuthRepository()
 }

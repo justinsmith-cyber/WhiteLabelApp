@@ -14,6 +14,7 @@ class AcmeBrandConfig : BrandConfig {
     override val taskLabel = "Job"
     override val apiBaseUrl = "https://api.acme.com"
     override val supportEmail = "support@acme.com"
+    override val supportPhone = "+1 (888) 226-3700"
     override val primaryColorArgb = 0xFFE53935L
     override val onPrimaryColorArgb = 0xFFFFFFFFL
     override val secondaryColorArgb = 0xFFF57F17L

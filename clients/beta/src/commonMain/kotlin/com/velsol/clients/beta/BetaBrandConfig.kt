@@ -14,6 +14,7 @@ class BetaBrandConfig : BrandConfig {
     override val taskLabel = "Plumbing job"
     override val apiBaseUrl = "https://api.beta-plumbing.com"
     override val supportEmail = "hello@beta-plumbing.com"
+    override val supportPhone = "+1 (877) 238-2582"
     override val primaryColorArgb = 0xFF1565C0L
     override val onPrimaryColorArgb = 0xFFFFFFFFL
     override val secondaryColorArgb = 0xFF00ACC1L

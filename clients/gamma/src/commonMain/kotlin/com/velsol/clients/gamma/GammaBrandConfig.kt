@@ -14,6 +14,7 @@ class GammaBrandConfig : BrandConfig {
     override val taskLabel = "Delivery"
     override val apiBaseUrl = "https://api.gamma-fieldtech.com"
     override val supportEmail = "support@gamma-fieldtech.com"
+    override val supportPhone = "+1 (866) 426-6284"
     override val primaryColorArgb = 0xFF2E7D32L
     override val onPrimaryColorArgb = 0xFFFFFFFFL
     override val secondaryColorArgb = 0xFFF9A825L

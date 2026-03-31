@@ -3,17 +3,21 @@ package com.velsol.root
 import com.velsol.feature.certifications.CertificationsComponent
 import com.velsol.feature.home.HomeComponent
 import com.velsol.feature.inventory.InventoryComponent
+import com.velsol.feature.login.LoginComponent
 import kotlinx.coroutines.flow.StateFlow
 
 data class RootState(
     val selectedTab: RootComponent.Tab = RootComponent.Tab.Home,
+    val isLoggedIn: Boolean = false,
 )
 
 sealed interface RootIntent {
     data class SelectTab(val tab: RootComponent.Tab) : RootIntent
+    data object LoginSuccess : RootIntent
 }
 
 interface RootComponent {
+    val login: LoginComponent
     val home: HomeComponent
     val certifications: CertificationsComponent
     val inventory: InventoryComponent

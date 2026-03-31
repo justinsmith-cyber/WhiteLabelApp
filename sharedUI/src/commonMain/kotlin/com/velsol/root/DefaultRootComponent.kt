@@ -9,6 +9,9 @@ import com.velsol.feature.home.DefaultHomeComponent
 import com.velsol.feature.home.HomeComponent
 import com.velsol.feature.inventory.DefaultInventoryComponent
 import com.velsol.feature.inventory.InventoryComponent
+import com.velsol.feature.login.DefaultLoginComponent
+import com.velsol.feature.login.LoginComponent
+import com.velsol.feature.login.MockSupportRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,6 +33,15 @@ class DefaultRootComponent(
 
     private val _state = MutableStateFlow(RootState())
     override val state: StateFlow<RootState> = _state.asStateFlow()
+
+    override val login: LoginComponent by lazy {
+        DefaultLoginComponent(
+            componentContext = childContext("login"),
+            authRepository = graph.authRepository,
+            supportRepository = MockSupportRepository(brandConfig),
+            onLoginSuccessCallback = { onIntent(RootIntent.LoginSuccess) },
+        )
+    }
 
     // Structural intent: expose all root tabs uniformly as lazy feature components.
     override val home: HomeComponent by lazy {
@@ -55,6 +67,7 @@ class DefaultRootComponent(
     override fun onIntent(intent: RootIntent) {
         when (intent) {
             is RootIntent.SelectTab -> _state.update { it.copy(selectedTab = intent.tab) }
+            RootIntent.LoginSuccess -> _state.update { it.copy(isLoggedIn = true) }
         }
     }
 }

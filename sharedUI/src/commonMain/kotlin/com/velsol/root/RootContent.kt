@@ -1,5 +1,9 @@
 package com.velsol.root
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -28,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.velsol.feature.certifications.CertificationsContent
 import com.velsol.feature.home.HomeContent
 import com.velsol.feature.inventory.InventoryContent
+import com.velsol.feature.login.LoginContent
 import com.velsol.generated.resources.Res
 import com.velsol.generated.resources.ic_tab_certifications
 import com.velsol.generated.resources.ic_tab_home
@@ -69,40 +74,50 @@ fun RootContent(
     val visibleTabs = component.visibleTabs
     val showNavigation = visibleTabs.size > 1
 
-    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val useSideNavigation = showNavigation && maxWidth >= WideLayoutBreakpoint
-        Row(Modifier.fillMaxSize()) {
-            if (useSideNavigation) {
-                AppNavigationRail(
-                    selectedTab = selectedTab,
-                    onSelectTab = onSelectTab,
-                    visibleTabs = visibleTabs,
-                    primary = primary,
-                    modifier = Modifier.fillMaxHeight(),
-                )
-            }
-            Scaffold(
-                modifier = Modifier.weight(1f).fillMaxHeight(),
-                contentWindowInsets = WindowInsets(0),
-                bottomBar = {
-                    if (showNavigation && !useSideNavigation) {
-                        AppNavigationBar(
+    AnimatedContent(
+        targetState = state.isLoggedIn,
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        modifier = modifier.fillMaxSize(),
+    ) { isLoggedIn ->
+        if (!isLoggedIn) {
+            LoginContent(component = component.login)
+        } else {
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val useSideNavigation = showNavigation && maxWidth >= WideLayoutBreakpoint
+                Row(Modifier.fillMaxSize()) {
+                    if (useSideNavigation) {
+                        AppNavigationRail(
                             selectedTab = selectedTab,
                             onSelectTab = onSelectTab,
                             visibleTabs = visibleTabs,
                             primary = primary,
+                            modifier = Modifier.fillMaxHeight(),
                         )
                     }
-                },
-            ) { innerPadding ->
-                RootTabScenes(
-                    selectedTab = selectedTab,
-                    component = component,
-                    isDark = isDark,
-                    onToggleDarkMode = onToggleDarkMode,
-                    onOpenGithub = onOpenGithub,
-                    modifier = Modifier.padding(innerPadding),
-                )
+                    Scaffold(
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                        contentWindowInsets = WindowInsets(0),
+                        bottomBar = {
+                            if (showNavigation && !useSideNavigation) {
+                                AppNavigationBar(
+                                    selectedTab = selectedTab,
+                                    onSelectTab = onSelectTab,
+                                    visibleTabs = visibleTabs,
+                                    primary = primary,
+                                )
+                            }
+                        },
+                    ) { innerPadding ->
+                        RootTabScenes(
+                            selectedTab = selectedTab,
+                            component = component,
+                            isDark = isDark,
+                            onToggleDarkMode = onToggleDarkMode,
+                            onOpenGithub = onOpenGithub,
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
+                }
             }
         }
     }
