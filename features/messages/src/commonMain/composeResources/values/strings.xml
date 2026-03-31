@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="messages_title">Messages</string>
+    <string name="messages_tab_incoming">INCOMING</string>
+    <string name="messages_tab_outgoing">OUTGOING</string>
+    <string name="messages_empty">No Messages Available</string>
+    <string name="messages_search_hint">Search</string>
+    <string name="messages_new_message_title">New Message</string>
+    <string name="messages_send_action">SEND</string>
+    <string name="messages_field_to">To:</string>
+    <string name="messages_field_from">From:</string>
+    <string name="messages_field_subject">Subject:</string>
+    <string name="messages_field_location">Location:</string>
+    <string name="messages_field_high_priority">High Priority</string>
+    <string name="messages_field_body_hint">Write your message here…</string>
+    <string name="messages_cd_menu">Open navigation menu</string>
+    <string name="messages_cd_add">Compose new message</string>
+    <string name="messages_cd_back">Go back</string>
+    <string name="messages_cd_clear_search">Clear search</string>
+    <string name="messages_cd_priority">High priority indicator</string>
+    <string name="messages_subject_required_error">Subject is required</string>
+    <string name="messages_send_error">Failed to send. Please try again.</string>
+</resources>

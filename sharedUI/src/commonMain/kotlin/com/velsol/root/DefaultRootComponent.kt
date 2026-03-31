@@ -12,6 +12,8 @@ import com.velsol.feature.inventory.InventoryComponent
 import com.velsol.feature.login.DefaultLoginComponent
 import com.velsol.feature.login.LoginComponent
 import com.velsol.feature.login.MockSupportRepository
+import com.velsol.feature.messages.DefaultMessagesComponent
+import com.velsol.feature.messages.MessagesComponent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +31,7 @@ class DefaultRootComponent(
         add(RootComponent.Tab.Home)
         if (brandConfig.features.hasHvacCertifications) add(RootComponent.Tab.Certifications)
         if (brandConfig.features.hasPlumbingInventory) add(RootComponent.Tab.Inventory)
+        add(RootComponent.Tab.Messages)
     }
 
     private val _state = MutableStateFlow(RootState())
@@ -61,6 +64,13 @@ class DefaultRootComponent(
         DefaultInventoryComponent(
             componentContext = childContext("inventory"),
             repository = graph.inventoryRepository,
+        )
+    }
+
+    override val messages: MessagesComponent by lazy {
+        DefaultMessagesComponent(
+            componentContext = childContext("messages"),
+            repository = graph.messagesRepository,
         )
     }
 

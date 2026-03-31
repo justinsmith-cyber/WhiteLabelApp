@@ -34,10 +34,12 @@ import com.velsol.feature.certifications.CertificationsContent
 import com.velsol.feature.home.HomeContent
 import com.velsol.feature.inventory.InventoryContent
 import com.velsol.feature.login.LoginContent
+import com.velsol.feature.messages.MessagesContent
 import com.velsol.generated.resources.Res
 import com.velsol.generated.resources.ic_tab_certifications
 import com.velsol.generated.resources.ic_tab_home
 import com.velsol.generated.resources.ic_tab_inventory
+import com.velsol.generated.resources.ic_tab_messages
 import com.velsol.theme.LocalBrandConfig
 import com.velsol.theme.LocalThemeIsDark
 import org.jetbrains.compose.resources.DrawableResource
@@ -50,6 +52,7 @@ private fun tabAssets(tab: RootComponent.Tab): Pair<String, DrawableResource> = 
     RootComponent.Tab.Home -> "Home" to Res.drawable.ic_tab_home
     RootComponent.Tab.Certifications -> "Certifications" to Res.drawable.ic_tab_certifications
     RootComponent.Tab.Inventory -> "Inventory" to Res.drawable.ic_tab_inventory
+    RootComponent.Tab.Messages -> "Messages" to Res.drawable.ic_tab_messages
 }
 
 @Composable
@@ -220,6 +223,11 @@ private fun RootTabScenes(
 
         RootComponent.Tab.Inventory -> InventoryContent(
             component = component.inventory,
+            modifier = modifier,
+        )
+
+        RootComponent.Tab.Messages -> MessagesContent(
+            component = component.messages,
             modifier = modifier,
         )
     }

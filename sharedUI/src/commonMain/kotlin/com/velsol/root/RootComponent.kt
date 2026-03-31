@@ -4,6 +4,7 @@ import com.velsol.feature.certifications.CertificationsComponent
 import com.velsol.feature.home.HomeComponent
 import com.velsol.feature.inventory.InventoryComponent
 import com.velsol.feature.login.LoginComponent
+import com.velsol.feature.messages.MessagesComponent
 import kotlinx.coroutines.flow.StateFlow
 
 data class RootState(
@@ -21,11 +22,12 @@ interface RootComponent {
     val home: HomeComponent
     val certifications: CertificationsComponent
     val inventory: InventoryComponent
+    val messages: MessagesComponent
     val state: StateFlow<RootState>
     /** Ordered list of tabs enabled for the active brand; drives navigation bar visibility. */
     val visibleTabs: List<Tab>
 
     fun onIntent(intent: RootIntent)
 
-    enum class Tab { Home, Certifications, Inventory }
+    enum class Tab { Home, Certifications, Inventory, Messages }
 }

@@ -30,6 +30,7 @@ kotlin {
             implementation(project(":features:certifications"))
             implementation(project(":features:inventory"))
             implementation(project(":features:login"))
+            implementation(project(":features:messages"))
             implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.androidx.lifecycle.viewmodel)
