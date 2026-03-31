@@ -35,6 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -250,7 +254,9 @@ private fun FeatureTile(
     val indicator = if (isEnabled) "●" else "○"
 
     Card(
-        modifier = modifier,
+        modifier = modifier.clearAndSetSemantics {
+            contentDescription = "$label is $statusText"
+        },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
     ) {
@@ -313,9 +319,19 @@ private fun BrandIdentityCard(
 
 @Composable
 private fun ColorSwatch(label: String, color: Color) {
+    val hex = remember(color) {
+        val r = (color.red * 255).toInt().coerceIn(0, 255)
+        val g = (color.green * 255).toInt().coerceIn(0, 255)
+        val b = (color.blue * 255).toInt().coerceIn(0, 255)
+        val packed = (r shl 16) or (g shl 8) or b
+        "#" + packed.toString(16).uppercase().padStart(6, '0')
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.clearAndSetSemantics {
+            contentDescription = "$label color swatch, hex $hex"
+        },
     ) {
         Box(
             modifier = Modifier
@@ -329,13 +345,6 @@ private fun ColorSwatch(label: String, color: Color) {
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
             )
-            val hex = remember(color) {
-                val r = (color.red * 255).toInt().coerceIn(0, 255)
-                val g = (color.green * 255).toInt().coerceIn(0, 255)
-                val b = (color.blue * 255).toInt().coerceIn(0, 255)
-                val packed = (r shl 16) or (g shl 8) or b
-                "#" + packed.toString(16).uppercase().padStart(6, '0')
-            }
             Text(
                 text = hex,
                 style = MaterialTheme.typography.bodySmall,
@@ -372,12 +381,15 @@ private fun ActionsRow(
     onOpenGithub: () -> Unit,
 ) {
     val themeIcon = if (isDark) Res.drawable.ic_light_mode else Res.drawable.ic_dark_mode
+    val themeState = if (isDark) "Dark mode" else "Light mode"
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         ElevatedButton(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .semantics { stateDescription = themeState },
             onClick = onToggleDarkMode,
         ) {
             Icon(vectorResource(themeIcon), contentDescription = null)
