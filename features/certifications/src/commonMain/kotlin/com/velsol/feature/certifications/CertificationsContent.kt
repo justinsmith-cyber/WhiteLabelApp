@@ -73,14 +73,15 @@ fun CertificationsContent(
     }
 }
 
+@Suppress("LambdaParameterEventTrailing") // Callers use named onSelectCert= only; Modifier precedes callback.
 @Composable
 private fun CertificationsListContent(
     state: CertListState.Content,
     primary: Color,
     onPrimary: Color,
     secondary: Color,
-    onSelectCert: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onSelectCert: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
