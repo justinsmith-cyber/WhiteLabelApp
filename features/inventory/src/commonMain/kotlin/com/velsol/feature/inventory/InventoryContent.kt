@@ -116,7 +116,7 @@ fun InventoryContent(
                 item = item,
                 primary = primary,
                 secondary = secondary,
-                onClick = { component.onItemSelected(item.sku) },
+                onClick = { component.onIntent(InventoryListIntent.SelectItem(item.sku)) },
             )
         }
     }

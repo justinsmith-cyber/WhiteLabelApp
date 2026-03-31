@@ -23,7 +23,9 @@ class DefaultInventoryListComponent internal constructor(
     )
     override val state: StateFlow<InventoryListState> = _state.asStateFlow()
 
-    override fun onItemSelected(sku: String) {
-        onItemSelectedCallback(sku)
+    override fun onIntent(intent: InventoryListIntent) {
+        when (intent) {
+            is InventoryListIntent.SelectItem -> onItemSelectedCallback(intent.sku)
+        }
     }
 }

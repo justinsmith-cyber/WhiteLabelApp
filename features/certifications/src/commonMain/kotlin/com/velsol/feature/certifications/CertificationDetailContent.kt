@@ -69,7 +69,7 @@ fun CertificationDetailContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            IconButton(onClick = component::onBack) {
+            IconButton(onClick = { component.onIntent(CertDetailIntent.Back) }) {
                 Text(
                     text = "←",
                     style = MaterialTheme.typography.titleLarge,

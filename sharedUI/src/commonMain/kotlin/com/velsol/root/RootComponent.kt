@@ -12,6 +12,12 @@ data class RootState(
     val showSwitcher: Boolean = false,
 )
 
+sealed interface RootIntent {
+    data class SelectTab(val tab: RootComponent.Tab) : RootIntent
+    data object ShowSwitcher : RootIntent
+    data object HideSwitcher : RootIntent
+}
+
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
     val certifications: CertificationsComponent
@@ -20,9 +26,7 @@ interface RootComponent {
     /** Ordered list of tabs enabled for the active brand; drives navigation bar visibility. */
     val visibleTabs: List<Tab>
 
-    fun onTabSelected(tab: Tab)
-    fun onShowSwitcher()
-    fun onHideSwitcher()
+    fun onIntent(intent: RootIntent)
 
     enum class Tab { Home, Certifications, Inventory }
 

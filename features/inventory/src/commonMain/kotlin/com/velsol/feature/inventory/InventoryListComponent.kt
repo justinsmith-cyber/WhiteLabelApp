@@ -8,8 +8,12 @@ data class InventoryListState(
     val lowCount: Int = 0,
 )
 
+sealed interface InventoryListIntent {
+    data class SelectItem(val sku: String) : InventoryListIntent
+}
+
 interface InventoryListComponent {
     val state: StateFlow<InventoryListState>
 
-    fun onItemSelected(sku: String)
+    fun onIntent(intent: InventoryListIntent)
 }

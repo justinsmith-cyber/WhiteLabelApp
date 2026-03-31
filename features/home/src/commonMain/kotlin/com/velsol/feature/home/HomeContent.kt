@@ -84,7 +84,7 @@ fun HomeContent(
                 primary = primary,
                 onPrimary = onPrimary,
                 secondary = secondary,
-                onLogoTap = component::onLogoTapped,
+                onLogoTap = { component.onIntent(HomeIntent.LogoTapped) },
             )
         }
         item {

@@ -44,7 +44,9 @@ class DefaultCertListComponent internal constructor(
         }
     }
 
-    override fun onCertSelected(certName: String) {
-        onCertSelectedCallback(certName)
+    override fun onIntent(intent: CertListIntent) {
+        when (intent) {
+            is CertListIntent.SelectCert -> onCertSelectedCallback(intent.certName)
+        }
     }
 }

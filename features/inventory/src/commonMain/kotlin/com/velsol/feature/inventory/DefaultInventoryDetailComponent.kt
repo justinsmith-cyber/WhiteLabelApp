@@ -16,7 +16,9 @@ class DefaultInventoryDetailComponent internal constructor(
     private val _state = MutableStateFlow(InventoryDetailState(item = getInventoryItem(itemSku)))
     override val state: StateFlow<InventoryDetailState> = _state.asStateFlow()
 
-    override fun onBack() {
-        onBackCallback()
+    override fun onIntent(intent: InventoryDetailIntent) {
+        when (intent) {
+            InventoryDetailIntent.Back -> onBackCallback()
+        }
     }
 }

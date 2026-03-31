@@ -82,7 +82,7 @@ fun RootContent(
             if (useSideNavigation) {
                 AppNavigationRail(
                     selectedTab = selectedTab,
-                    onSelectTab = { component.onTabSelected(it) },
+                    onSelectTab = { component.onIntent(RootIntent.SelectTab(it)) },
                     visibleTabs = visibleTabs,
                     primary = primary,
                     modifier = Modifier.fillMaxHeight(),
@@ -95,7 +95,7 @@ fun RootContent(
                     if (showNavigation && !useSideNavigation) {
                         AppNavigationBar(
                             selectedTab = selectedTab,
-                            onSelectTab = { component.onTabSelected(it) },
+                            onSelectTab = { component.onIntent(RootIntent.SelectTab(it)) },
                             visibleTabs = visibleTabs,
                             primary = primary,
                         )
@@ -117,10 +117,10 @@ fun RootContent(
 
     if (showSwitcher) {
         DemoClientSwitcher(
-            onDismiss = { component.onHideSwitcher() },
+            onDismiss = { component.onIntent(RootIntent.HideSwitcher) },
             onBrandSelect = { config ->
                 onBrandSelect(config)
-                component.onTabSelected(RootComponent.Tab.Home)
+                component.onIntent(RootIntent.SelectTab(RootComponent.Tab.Home))
             },
         )
     }

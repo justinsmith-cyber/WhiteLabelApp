@@ -59,7 +59,7 @@ fun InventoryDetailContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            IconButton(onClick = component::onBack) {
+            IconButton(onClick = { component.onIntent(InventoryDetailIntent.Back) }) {
                 Text(
                     text = "←",
                     style = MaterialTheme.typography.titleLarge,

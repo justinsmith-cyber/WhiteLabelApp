@@ -56,23 +56,19 @@ class DefaultRootComponent(
     override val inventory: InventoryComponent =
         DefaultInventoryComponent(childContext("inventory"))
 
-    override fun onTabSelected(tab: RootComponent.Tab) {
-        _state.update { it.copy(selectedTab = tab) }
-    }
-
-    override fun onShowSwitcher() {
-        _state.update { it.copy(showSwitcher = true) }
-    }
-
-    override fun onHideSwitcher() {
-        _state.update { it.copy(showSwitcher = false) }
+    override fun onIntent(intent: RootIntent) {
+        when (intent) {
+            is RootIntent.SelectTab -> _state.update { it.copy(selectedTab = intent.tab) }
+            RootIntent.ShowSwitcher -> _state.update { it.copy(showSwitcher = true) }
+            RootIntent.HideSwitcher -> _state.update { it.copy(showSwitcher = false) }
+        }
     }
 
     private fun createChild(config: Config, context: ComponentContext): RootComponent.Child = when (config) {
         Config.Home -> RootComponent.Child.HomeChild(
             DefaultHomeComponent(
                 componentContext = context,
-                onShowDemoSwitcher = ::onShowSwitcher,
+                onShowDemoSwitcher = { onIntent(RootIntent.ShowSwitcher) },
             ),
         )
     }

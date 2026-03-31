@@ -55,7 +55,7 @@ fun CertificationsContent(
                 primary = primary,
                 onPrimary = onPrimary,
                 secondary = secondary,
-                onSelectCert = component::onCertSelected,
+                onSelectCert = { component.onIntent(CertListIntent.SelectCert(it)) },
                 modifier = modifier,
             )
         }

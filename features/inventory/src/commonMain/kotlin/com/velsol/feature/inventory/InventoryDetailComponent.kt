@@ -6,9 +6,13 @@ data class InventoryDetailState(
     val item: InventoryItem? = null,
 )
 
+sealed interface InventoryDetailIntent {
+    data object Back : InventoryDetailIntent
+}
+
 interface InventoryDetailComponent {
     val itemSku: String
     val state: StateFlow<InventoryDetailState>
 
-    fun onBack()
+    fun onIntent(intent: InventoryDetailIntent)
 }

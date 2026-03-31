@@ -13,7 +13,12 @@ sealed interface CertListState {
     ) : CertListState
 }
 
+sealed interface CertListIntent {
+    data class SelectCert(val certName: String) : CertListIntent
+}
+
 interface CertListComponent {
     val state: StateFlow<CertListState>
-    fun onCertSelected(certName: String)
+
+    fun onIntent(intent: CertListIntent)
 }

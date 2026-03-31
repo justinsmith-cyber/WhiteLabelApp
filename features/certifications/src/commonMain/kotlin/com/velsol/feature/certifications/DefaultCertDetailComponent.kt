@@ -37,7 +37,9 @@ class DefaultCertDetailComponent internal constructor(
         }
     }
 
-    override fun onBack() {
-        onBackCallback()
+    override fun onIntent(intent: CertDetailIntent) {
+        when (intent) {
+            CertDetailIntent.Back -> onBackCallback()
+        }
     }
 }
