@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,6 +52,11 @@ fun CertificationsContent(
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
     val state by component.state.collectAsState()
+    // Stable reference: avoids new (String) -> Unit on every state emission so list rows can skip
+    // recomposition when only unrelated fields (e.g. header counts) change.
+    val onSelectCert = remember(component) {
+        { certName: String -> component.onIntent(CertListIntent.SelectCert(certName)) }
+    }
 
     Crossfade(targetState = state, modifier = modifier) { currentState ->
         when (currentState) {
@@ -66,7 +72,7 @@ fun CertificationsContent(
                     primary = primary,
                     onPrimary = onPrimary,
                     secondary = secondary,
-                    onSelectCert = { component.onIntent(CertListIntent.SelectCert(it)) },
+                    onSelectCert = onSelectCert,
                 )
             }
         }
@@ -142,10 +148,16 @@ private fun CertificationsListContent(
 
         // Stable key by cert name prevents full list rebind when items are added, removed, or reordered.
         items(items = state.certs, key = { it.name }) { cert ->
+            val certName = cert.name
+            // Per-row stable onClick: same CertRecord + stable onSelectCert keeps click lambda instance
+            // identical across recompositions driven only by other list/header state.
+            val onCertClick = remember(certName, onSelectCert) {
+                { onSelectCert(certName) }
+            }
             CertificationCard(
                 cert = cert,
                 secondary = secondary,
-                onClick = { onSelectCert(cert.name) },
+                onClick = onCertClick,
             )
         }
     }
