@@ -31,7 +31,6 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.velsol.core.domain.brand.BrandConfig
-import com.velsol.core.domain.brand.FeatureToggles
 import com.velsol.demo.DemoClientSwitcher
 import com.velsol.feature.certifications.CertificationDetailContent
 import com.velsol.feature.certifications.CertificationsComponent
@@ -49,28 +48,14 @@ import com.velsol.theme.LocalThemeIsDark
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-// Single source of tab definitions for bottom bar and navigation rail so feature flags and assets stay aligned.
-private data class TabDestination(
-    val tab: RootComponent.Tab,
-    val label: String,
-    val icon: DrawableResource,
-    val isVisible: (FeatureToggles) -> Boolean,
-)
-
-private val rootTabDestinations =
-    listOf(
-        TabDestination(RootComponent.Tab.Home, "Home", Res.drawable.ic_tab_home) { true },
-        TabDestination(RootComponent.Tab.Certifications, "Certifications", Res.drawable.ic_tab_certifications) {
-            it.hasHvacCertifications
-        },
-        TabDestination(RootComponent.Tab.Inventory, "Inventory", Res.drawable.ic_tab_inventory) {
-            it.hasPlumbingInventory
-        },
-    )
-
-private fun FeatureToggles.visibleRootTabs(): List<TabDestination> = rootTabDestinations.filter { it.isVisible(this) }
-
 private val WideLayoutBreakpoint = 900.dp
+
+/** Maps a tab to its label and icon resource — purely a UI asset lookup, not a visibility rule. */
+private fun tabAssets(tab: RootComponent.Tab): Pair<String, DrawableResource> = when (tab) {
+    RootComponent.Tab.Home -> "Home" to Res.drawable.ic_tab_home
+    RootComponent.Tab.Certifications -> "Certifications" to Res.drawable.ic_tab_certifications
+    RootComponent.Tab.Inventory -> "Inventory" to Res.drawable.ic_tab_inventory
+}
 
 @Composable
 fun RootContent(
@@ -82,23 +67,23 @@ fun RootContent(
     var isDark by LocalThemeIsDark.current
     val uriHandler = LocalUriHandler.current
     val brandConfig = LocalBrandConfig.current
-    val features = brandConfig.features
     val primary = Color(brandConfig.primaryColorArgb)
 
     val state by component.state.collectAsState()
     val selectedTab = state.selectedTab
     val showSwitcher = state.showSwitcher
 
-    val hasAnyFeature = features.hasHvacCertifications || features.hasPlumbingInventory
+    val visibleTabs = component.visibleTabs
+    val showNavigation = visibleTabs.size > 1
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val useSideNavigation = hasAnyFeature && maxWidth >= WideLayoutBreakpoint
+        val useSideNavigation = showNavigation && maxWidth >= WideLayoutBreakpoint
         Row(Modifier.fillMaxSize()) {
             if (useSideNavigation) {
                 AppNavigationRail(
                     selectedTab = selectedTab,
                     onSelectTab = { component.onTabSelected(it) },
-                    features = features,
+                    visibleTabs = visibleTabs,
                     primary = primary,
                     modifier = Modifier.fillMaxHeight(),
                 )
@@ -107,11 +92,11 @@ fun RootContent(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 contentWindowInsets = WindowInsets(0),
                 bottomBar = {
-                    if (hasAnyFeature && !useSideNavigation) {
+                    if (showNavigation && !useSideNavigation) {
                         AppNavigationBar(
                             selectedTab = selectedTab,
                             onSelectTab = { component.onTabSelected(it) },
-                            features = features,
+                            visibleTabs = visibleTabs,
                             primary = primary,
                         )
                     }
@@ -145,7 +130,7 @@ fun RootContent(
 private fun AppNavigationBar(
     selectedTab: RootComponent.Tab,
     onSelectTab: (RootComponent.Tab) -> Unit,
-    features: FeatureToggles,
+    visibleTabs: List<RootComponent.Tab>,
     primary: Color,
 ) {
     val colors = NavigationBarItemDefaults.colors(
@@ -154,19 +139,20 @@ private fun AppNavigationBar(
         selectedTextColor = primary,
     )
     NavigationBar {
-        for (dest in features.visibleRootTabs()) {
+        for (tab in visibleTabs) {
+            val (label, icon) = tabAssets(tab)
             NavigationBarItem(
-                selected = selectedTab == dest.tab,
-                onClick = { onSelectTab(dest.tab) },
+                selected = selectedTab == tab,
+                onClick = { onSelectTab(tab) },
                 icon = {
                     TabIcon(
-                        iconRes = dest.icon,
-                        label = dest.label,
-                        isSelected = selectedTab == dest.tab,
+                        iconRes = icon,
+                        label = label,
+                        isSelected = selectedTab == tab,
                         color = primary,
                     )
                 },
-                label = { Text(dest.label, style = MaterialTheme.typography.labelSmall) },
+                label = { Text(label, style = MaterialTheme.typography.labelSmall) },
                 colors = colors,
             )
         }
@@ -177,7 +163,7 @@ private fun AppNavigationBar(
 private fun AppNavigationRail(
     selectedTab: RootComponent.Tab,
     onSelectTab: (RootComponent.Tab) -> Unit,
-    features: FeatureToggles,
+    visibleTabs: List<RootComponent.Tab>,
     primary: Color,
     modifier: Modifier = Modifier,
 ) {
@@ -190,19 +176,20 @@ private fun AppNavigationRail(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) {
-        for (dest in features.visibleRootTabs()) {
+        for (tab in visibleTabs) {
+            val (label, icon) = tabAssets(tab)
             NavigationRailItem(
-                selected = selectedTab == dest.tab,
-                onClick = { onSelectTab(dest.tab) },
+                selected = selectedTab == tab,
+                onClick = { onSelectTab(tab) },
                 icon = {
                     TabIcon(
-                        iconRes = dest.icon,
-                        label = dest.label,
-                        isSelected = selectedTab == dest.tab,
+                        iconRes = icon,
+                        label = label,
+                        isSelected = selectedTab == tab,
                         color = primary,
                     )
                 },
-                label = { Text(dest.label, style = MaterialTheme.typography.labelSmall) },
+                label = { Text(label, style = MaterialTheme.typography.labelSmall) },
                 colors = colors,
             )
         }

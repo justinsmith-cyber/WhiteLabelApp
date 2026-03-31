@@ -27,6 +27,12 @@ class DefaultRootComponent(
     private val brandConfig = appBrandConfig()
     private val httpClient = createHttpClient()
 
+    override val visibleTabs: List<RootComponent.Tab> = buildList {
+        add(RootComponent.Tab.Home)
+        if (brandConfig.features.hasHvacCertifications) add(RootComponent.Tab.Certifications)
+        if (brandConfig.features.hasPlumbingInventory) add(RootComponent.Tab.Inventory)
+    }
+
     private val navigation = StackNavigation<Config>()
 
     private val _state = MutableStateFlow(RootState())

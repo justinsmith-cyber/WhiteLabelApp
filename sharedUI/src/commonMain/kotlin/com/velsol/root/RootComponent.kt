@@ -17,6 +17,8 @@ interface RootComponent {
     val certifications: CertificationsComponent
     val inventory: InventoryComponent
     val state: StateFlow<RootState>
+    /** Ordered list of tabs enabled for the active brand; drives navigation bar visibility. */
+    val visibleTabs: List<Tab>
 
     fun onTabSelected(tab: Tab)
     fun onShowSwitcher()
