@@ -1,7 +1,5 @@
 package com.velsol.root
 
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.value.Value
 import com.velsol.feature.certifications.CertificationsComponent
 import com.velsol.feature.home.HomeComponent
 import com.velsol.feature.inventory.InventoryComponent
@@ -16,7 +14,7 @@ sealed interface RootIntent {
 }
 
 interface RootComponent {
-    val stack: Value<ChildStack<*, Child>>
+    val home: HomeComponent
     val certifications: CertificationsComponent
     val inventory: InventoryComponent
     val state: StateFlow<RootState>
@@ -26,8 +24,4 @@ interface RootComponent {
     fun onIntent(intent: RootIntent)
 
     enum class Tab { Home, Certifications, Inventory }
-
-    sealed class Child {
-        class HomeChild(val component: HomeComponent) : Child()
-    }
 }

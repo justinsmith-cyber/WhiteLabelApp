@@ -26,11 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.arkivanov.decompose.extensions.compose.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.arkivanov.decompose.router.stack.ChildStack
 import com.velsol.feature.certifications.CertificationsContent
 import com.velsol.feature.home.HomeContent
 import com.velsol.feature.inventory.InventoryContent
@@ -57,7 +52,6 @@ fun RootContent(
     component: RootComponent,
     modifier: Modifier = Modifier,
 ) {
-    val stack by component.stack.subscribeAsState()
     var isDark by LocalThemeIsDark.current
     val uriHandler = LocalUriHandler.current
     val brandConfig = LocalBrandConfig.current
@@ -102,7 +96,6 @@ fun RootContent(
                 RootTabScenes(
                     selectedTab = selectedTab,
                     component = component,
-                    stack = stack,
                     isDark = isDark,
                     onToggleDarkMode = { isDark = !isDark },
                     onOpenGithub = { uriHandler.openUri("https://github.com/terrakok") },
@@ -188,26 +181,19 @@ private fun AppNavigationRail(
 private fun RootTabScenes(
     selectedTab: RootComponent.Tab,
     component: RootComponent,
-    stack: ChildStack<*, RootComponent.Child>,
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (selectedTab) {
-        RootComponent.Tab.Home -> Children(
-            stack = stack,
+        RootComponent.Tab.Home -> HomeContent(
+            component = component.home,
+            isDark = isDark,
+            onToggleDarkMode = onToggleDarkMode,
+            onOpenGithub = onOpenGithub,
             modifier = modifier,
-            animation = stackAnimation(fade()),
-        ) { child ->
-            when (val instance = child.instance) {
-                is RootComponent.Child.HomeChild -> HomeContent(
-                    isDark = isDark,
-                    onToggleDarkMode = onToggleDarkMode,
-                    onOpenGithub = onOpenGithub,
-                )
-            }
-        }
+        )
 
         RootComponent.Tab.Certifications -> CertificationsContent(
             component = component.certifications,

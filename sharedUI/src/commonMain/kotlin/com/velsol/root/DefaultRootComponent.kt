@@ -2,21 +2,17 @@ package com.velsol.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.value.Value
 import com.velsol.di.appGraph
 import com.velsol.feature.certifications.CertificationsComponent
 import com.velsol.feature.certifications.DefaultCertificationsComponent
 import com.velsol.feature.home.DefaultHomeComponent
+import com.velsol.feature.home.HomeComponent
 import com.velsol.feature.inventory.DefaultInventoryComponent
 import com.velsol.feature.inventory.InventoryComponent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.serialization.Serializable
 
 class DefaultRootComponent(
     componentContext: ComponentContext,
@@ -32,18 +28,13 @@ class DefaultRootComponent(
         if (brandConfig.features.hasPlumbingInventory) add(RootComponent.Tab.Inventory)
     }
 
-    private val navigation = StackNavigation<Config>()
-
     private val _state = MutableStateFlow(RootState())
     override val state: StateFlow<RootState> = _state.asStateFlow()
 
-    override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
-        source = navigation,
-        serializer = Config.serializer(),
-        initialConfiguration = Config.Home,
-        handleBackButton = true,
-        childFactory = ::createChild,
-    )
+    // Structural intent: expose all root tabs uniformly as lazy feature components.
+    override val home: HomeComponent by lazy {
+        DefaultHomeComponent(componentContext = childContext("home"))
+    }
 
     // Lazily create feature components so their child stacks/data loading do not run at app startup.
     override val certifications: CertificationsComponent by lazy {
@@ -65,19 +56,5 @@ class DefaultRootComponent(
         when (intent) {
             is RootIntent.SelectTab -> _state.update { it.copy(selectedTab = intent.tab) }
         }
-    }
-
-    private fun createChild(config: Config, context: ComponentContext): RootComponent.Child = when (config) {
-        Config.Home -> RootComponent.Child.HomeChild(
-            DefaultHomeComponent(
-                componentContext = context,
-            ),
-        )
-    }
-
-    @Serializable
-    sealed interface Config {
-        @Serializable
-        data object Home : Config
     }
 }

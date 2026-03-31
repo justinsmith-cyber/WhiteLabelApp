@@ -70,7 +70,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun HomeContent(
+    component: HomeComponent,
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
