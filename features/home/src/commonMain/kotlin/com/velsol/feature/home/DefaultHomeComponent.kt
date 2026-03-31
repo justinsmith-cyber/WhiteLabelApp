@@ -10,6 +10,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val TapCountThreshold = 3
+private const val TapResetDelayMs = 600L
+
 class DefaultHomeComponent(
     componentContext: ComponentContext,
     private val onShowDemoSwitcher: () -> Unit,
@@ -28,13 +31,13 @@ class DefaultHomeComponent(
     override fun onLogoTapped() {
         tapCount++
         tapResetJob?.cancel()
-        if (tapCount >= 3) {
+        if (tapCount >= TapCountThreshold) {
             onShowDemoSwitcher()
             tapCount = 0
             return
         }
         tapResetJob = scope.launch {
-            delay(600L)
+            delay(TapResetDelayMs)
             tapCount = 0
         }
     }

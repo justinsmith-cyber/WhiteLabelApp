@@ -80,7 +80,7 @@ fun HomeContent(
                 primary = primary,
                 onPrimary = onPrimary,
                 secondary = secondary,
-                onLogoTapped = component::onLogoTapped,
+                onLogoTap = component::onLogoTapped,
             )
         }
         item {
@@ -117,7 +117,7 @@ private fun HeroBrandCard(
     primary: Color,
     onPrimary: Color,
     secondary: Color,
-    onLogoTapped: () -> Unit,
+    onLogoTap: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -164,7 +164,7 @@ private fun HeroBrandCard(
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 42.sp,
-                modifier = Modifier.clickable { onLogoTapped() },
+                modifier = Modifier.clickable { onLogoTap() },
             )
             Spacer(Modifier.height(6.dp))
             Text(
