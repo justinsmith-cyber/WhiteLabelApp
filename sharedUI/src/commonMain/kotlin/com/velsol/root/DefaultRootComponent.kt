@@ -45,17 +45,21 @@ class DefaultRootComponent(
         childFactory = ::createChild,
     )
 
-    override val certifications: CertificationsComponent =
+    // Lazily create feature components so their child stacks/data loading do not run at app startup.
+    override val certifications: CertificationsComponent by lazy {
         DefaultCertificationsComponent(
             componentContext = childContext("certifications"),
             repository = graph.certificationsRepository,
         )
+    }
 
-    override val inventory: InventoryComponent =
+    // Defers inventory setup/allocation until the user visits that tab.
+    override val inventory: InventoryComponent by lazy {
         DefaultInventoryComponent(
             componentContext = childContext("inventory"),
             repository = graph.inventoryRepository,
         )
+    }
 
     override fun onIntent(intent: RootIntent) {
         when (intent) {
