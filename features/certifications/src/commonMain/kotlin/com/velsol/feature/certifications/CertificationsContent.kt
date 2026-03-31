@@ -1,5 +1,6 @@
 package com.velsol.feature.certifications
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,22 +43,23 @@ fun CertificationsContent(
     val secondary = Color(brandConfig.secondaryColorArgb)
     val state by component.state.collectAsState()
 
-    when (val currentState = state) {
-        is CertListState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = primary)
+    Crossfade(targetState = state, modifier = modifier) { currentState ->
+        when (currentState) {
+            is CertListState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = primary)
+                }
             }
-        }
 
-        is CertListState.Content -> {
-            CertificationsListContent(
-                state = currentState,
-                primary = primary,
-                onPrimary = onPrimary,
-                secondary = secondary,
-                onSelectCert = { component.onIntent(CertListIntent.SelectCert(it)) },
-                modifier = modifier,
-            )
+            is CertListState.Content -> {
+                CertificationsListContent(
+                    state = currentState,
+                    primary = primary,
+                    onPrimary = onPrimary,
+                    secondary = secondary,
+                    onSelectCert = { component.onIntent(CertListIntent.SelectCert(it)) },
+                )
+            }
         }
     }
 }

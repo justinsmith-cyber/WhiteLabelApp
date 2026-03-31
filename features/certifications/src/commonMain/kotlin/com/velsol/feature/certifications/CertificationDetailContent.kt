@@ -1,5 +1,6 @@
 package com.velsol.feature.certifications
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,99 +46,98 @@ fun CertificationDetailContent(
     val onPrimary = Color(brandConfig.onPrimaryColorArgb)
     val secondary = Color(brandConfig.secondaryColorArgb)
 
-    if (state.isLoading) {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = primary)
-        }
-        return
-    }
-
-    val cert = state.cert ?: return
-
-    val (statusLabel, statusColor) = cert.status.toUiModel(secondary)
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            IconButton(
-                onClick = { component.onIntent(CertDetailIntent.Back) },
-                modifier = Modifier.clearAndSetSemantics {
-                    contentDescription = "Navigate back"
-                },
-            ) {
-                Text(
-                    text = "←",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = primary,
-                )
+    Crossfade(targetState = state.cert, modifier = modifier) { cert ->
+        if (cert == null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = primary)
             }
-            Text(
-                text = "Certification Detail",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
+        } else {
+            val (statusLabel, statusColor) = cert.status.toUiModel(secondary)
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = primary),
-        ) {
-            Column(Modifier.padding(24.dp)) {
-                Text(
-                    text = "HVAC CERTIFICATION",
-                    color = onPrimary.copy(alpha = 0.65f),
-                    style = MaterialTheme.typography.labelSmall,
-                    letterSpacing = 2.sp,
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = cert.name,
-                    color = onPrimary,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(Modifier.height(12.dp))
-                Surface(
-                    shape = RoundedCornerShape(50),
-                    color = statusColor.copy(alpha = 0.25f),
-                ) {
-                    Text(
-                        text = statusLabel,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = onPrimary,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-            }
-        }
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-        ) {
             Column(
-                modifier = Modifier.padding(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp, vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                DetailRow(label = "Technician", value = cert.technician)
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                DetailRow(label = "Expiry Date", value = cert.expires)
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                DetailRow(
-                    label = "Status",
-                    value = statusLabel,
-                    valueColor = statusColor,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    IconButton(
+                        onClick = { component.onIntent(CertDetailIntent.Back) },
+                        modifier = Modifier.clearAndSetSemantics {
+                            contentDescription = "Navigate back"
+                        },
+                    ) {
+                        Text(
+                            text = "←",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = primary,
+                        )
+                    }
+                    Text(
+                        text = "Certification Detail",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(containerColor = primary),
+                ) {
+                    Column(Modifier.padding(24.dp)) {
+                        Text(
+                            text = "HVAC CERTIFICATION",
+                            color = onPrimary.copy(alpha = 0.65f),
+                            style = MaterialTheme.typography.labelSmall,
+                            letterSpacing = 2.sp,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = cert.name,
+                            color = onPrimary,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = statusColor.copy(alpha = 0.25f),
+                        ) {
+                            Text(
+                                text = statusLabel,
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = onPrimary,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        DetailRow(label = "Technician", value = cert.technician)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        DetailRow(label = "Expiry Date", value = cert.expires)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        DetailRow(
+                            label = "Status",
+                            value = statusLabel,
+                            valueColor = statusColor,
+                        )
+                    }
+                }
             }
         }
     }
