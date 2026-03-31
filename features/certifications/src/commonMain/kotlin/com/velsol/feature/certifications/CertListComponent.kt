@@ -9,7 +9,6 @@ sealed interface CertListState {
         val certs: List<CertRecord>,
         val activeCount: Int,
         val expiringCount: Int,
-        val isRefreshing: Boolean = false,
     ) : CertListState
 }
 

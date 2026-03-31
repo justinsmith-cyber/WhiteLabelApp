@@ -9,7 +9,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DefaultCertListComponent internal constructor(
@@ -31,10 +30,7 @@ class DefaultCertListComponent internal constructor(
 
     private fun loadCertifications() {
         scope.launch {
-            // Mark as refreshing if already loaded so the UI can show a subtle indicator.
-            _state.update { current ->
-                if (current is CertListState.Content) current.copy(isRefreshing = true) else CertListState.Loading
-            }
+            // List state is only Loading vs loaded Content; add refresh-specific state when pull-to-refresh exists.
             val loadedCerts = getCertifications()
             _state.value = CertListState.Content(
                 certs = loadedCerts,
