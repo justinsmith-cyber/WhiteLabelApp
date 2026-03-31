@@ -1,5 +1,3 @@
-@file:Suppress("ktlint:compose:lambda-param-in-effect")
-
 package com.velsol.feature.home
 
 import androidx.compose.foundation.background
@@ -32,11 +30,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,18 +46,15 @@ import com.velsol.feature.home.generated.resources.ic_dark_mode
 import com.velsol.feature.home.generated.resources.ic_light_mode
 import com.velsol.feature.home.generated.resources.open_github
 import com.velsol.feature.home.generated.resources.theme
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
-@Suppress("UnusedParameter")
 @Composable
 fun HomeContent(
     component: HomeComponent,
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
-    onShowDemoSwitcher: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val brandConfig = LocalBrandConfig.current
@@ -89,7 +80,7 @@ fun HomeContent(
                 primary = primary,
                 onPrimary = onPrimary,
                 secondary = secondary,
-                onShowDemoSwitcher = onShowDemoSwitcher,
+                onLogoTapped = component::onLogoTapped,
             )
         }
         item {
@@ -116,7 +107,6 @@ fun HomeContent(
     }
 }
 
-@Suppress("LambdaParameterInRestartableEffect")
 @Composable
 private fun HeroBrandCard(
     appName: String,
@@ -127,18 +117,8 @@ private fun HeroBrandCard(
     primary: Color,
     onPrimary: Color,
     secondary: Color,
-    onShowDemoSwitcher: () -> Unit = {},
+    onLogoTapped: () -> Unit,
 ) {
-    var tapCount by remember { mutableIntStateOf(0) }
-    LaunchedEffect(tapCount) {
-        if (tapCount in 1..2) {
-            delay(600L)
-            tapCount = 0
-        } else if (tapCount >= 3) {
-            onShowDemoSwitcher()
-            tapCount = 0
-        }
-    }
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
@@ -184,7 +164,7 @@ private fun HeroBrandCard(
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 42.sp,
-                modifier = Modifier.clickable { tapCount++ },
+                modifier = Modifier.clickable { onLogoTapped() },
             )
             Spacer(Modifier.height(6.dp))
             Text(

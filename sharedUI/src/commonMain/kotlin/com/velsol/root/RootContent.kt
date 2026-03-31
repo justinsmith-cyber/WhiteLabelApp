@@ -18,9 +18,8 @@ import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,11 +49,9 @@ import com.velsol.theme.LocalThemeIsDark
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-private enum class Tab { Home, Certifications, Inventory }
-
 // Single source of tab definitions for bottom bar and navigation rail so feature flags and assets stay aligned.
 private data class TabDestination(
-    val tab: Tab,
+    val tab: RootComponent.Tab,
     val label: String,
     val icon: DrawableResource,
     val isVisible: (FeatureToggles) -> Boolean,
@@ -62,11 +59,11 @@ private data class TabDestination(
 
 private val rootTabDestinations =
     listOf(
-        TabDestination(Tab.Home, "Home", Res.drawable.ic_tab_home) { true },
-        TabDestination(Tab.Certifications, "Certifications", Res.drawable.ic_tab_certifications) {
+        TabDestination(RootComponent.Tab.Home, "Home", Res.drawable.ic_tab_home) { true },
+        TabDestination(RootComponent.Tab.Certifications, "Certifications", Res.drawable.ic_tab_certifications) {
             it.hasHvacCertifications
         },
-        TabDestination(Tab.Inventory, "Inventory", Res.drawable.ic_tab_inventory) {
+        TabDestination(RootComponent.Tab.Inventory, "Inventory", Res.drawable.ic_tab_inventory) {
             it.hasPlumbingInventory
         },
     )
@@ -88,8 +85,9 @@ fun RootContent(
     val features = brandConfig.features
     val primary = Color(brandConfig.primaryColorArgb)
 
-    var selectedTab by remember { mutableStateOf(Tab.Home) }
-    var showSwitcher by remember { mutableStateOf(false) }
+    val state by component.state.collectAsState()
+    val selectedTab = state.selectedTab
+    val showSwitcher = state.showSwitcher
 
     val hasAnyFeature = features.hasHvacCertifications || features.hasPlumbingInventory
 
@@ -99,7 +97,7 @@ fun RootContent(
             if (useSideNavigation) {
                 AppNavigationRail(
                     selectedTab = selectedTab,
-                    onSelectTab = { selectedTab = it },
+                    onSelectTab = { component.onTabSelected(it) },
                     features = features,
                     primary = primary,
                     modifier = Modifier.fillMaxHeight(),
@@ -112,7 +110,7 @@ fun RootContent(
                     if (hasAnyFeature && !useSideNavigation) {
                         AppNavigationBar(
                             selectedTab = selectedTab,
-                            onSelectTab = { selectedTab = it },
+                            onSelectTab = { component.onTabSelected(it) },
                             features = features,
                             primary = primary,
                         )
@@ -126,7 +124,6 @@ fun RootContent(
                     isDark = isDark,
                     onToggleDarkMode = { isDark = !isDark },
                     onOpenGithub = { uriHandler.openUri("https://github.com/terrakok") },
-                    onShowDemoSwitcher = { showSwitcher = true },
                     modifier = Modifier.padding(innerPadding),
                 )
             }
@@ -135,10 +132,10 @@ fun RootContent(
 
     if (showSwitcher) {
         DemoClientSwitcher(
-            onDismiss = { showSwitcher = false },
+            onDismiss = { component.onHideSwitcher() },
             onBrandSelect = { config ->
                 onBrandSelect(config)
-                selectedTab = Tab.Home
+                component.onTabSelected(RootComponent.Tab.Home)
             },
         )
     }
@@ -146,8 +143,8 @@ fun RootContent(
 
 @Composable
 private fun AppNavigationBar(
-    selectedTab: Tab,
-    onSelectTab: (Tab) -> Unit,
+    selectedTab: RootComponent.Tab,
+    onSelectTab: (RootComponent.Tab) -> Unit,
     features: FeatureToggles,
     primary: Color,
 ) {
@@ -178,8 +175,8 @@ private fun AppNavigationBar(
 
 @Composable
 private fun AppNavigationRail(
-    selectedTab: Tab,
-    onSelectTab: (Tab) -> Unit,
+    selectedTab: RootComponent.Tab,
+    onSelectTab: (RootComponent.Tab) -> Unit,
     features: FeatureToggles,
     primary: Color,
     modifier: Modifier = Modifier,
@@ -214,17 +211,16 @@ private fun AppNavigationRail(
 
 @Composable
 private fun RootTabScenes(
-    selectedTab: Tab,
+    selectedTab: RootComponent.Tab,
     component: RootComponent,
     stack: ChildStack<*, RootComponent.Child>,
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
-    onShowDemoSwitcher: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (selectedTab) {
-        Tab.Home -> Children(
+        RootComponent.Tab.Home -> Children(
             stack = stack,
             modifier = modifier,
             animation = stackAnimation(fade()),
@@ -235,12 +231,11 @@ private fun RootTabScenes(
                     isDark = isDark,
                     onToggleDarkMode = onToggleDarkMode,
                     onOpenGithub = onOpenGithub,
-                    onShowDemoSwitcher = onShowDemoSwitcher,
                 )
             }
         }
 
-        Tab.Certifications -> {
+        RootComponent.Tab.Certifications -> {
             val certsStack by component.certifications.stack.subscribeAsState()
             Children(
                 stack = certsStack,
@@ -259,7 +254,7 @@ private fun RootTabScenes(
             }
         }
 
-        Tab.Inventory -> {
+        RootComponent.Tab.Inventory -> {
             val inventoryStack by component.inventory.stack.subscribeAsState()
             Children(
                 stack = inventoryStack,

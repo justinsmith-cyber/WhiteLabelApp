@@ -13,6 +13,10 @@ import com.velsol.feature.certifications.DefaultCertificationsComponent
 import com.velsol.feature.home.DefaultHomeComponent
 import com.velsol.feature.inventory.DefaultInventoryComponent
 import com.velsol.feature.inventory.InventoryComponent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.serialization.Serializable
 
 class DefaultRootComponent(
@@ -24,6 +28,9 @@ class DefaultRootComponent(
     private val httpClient = createHttpClient()
 
     private val navigation = StackNavigation<Config>()
+
+    private val _state = MutableStateFlow(RootState())
+    override val state: StateFlow<RootState> = _state.asStateFlow()
 
     override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
@@ -43,8 +50,25 @@ class DefaultRootComponent(
     override val inventory: InventoryComponent =
         DefaultInventoryComponent(childContext("inventory"))
 
+    override fun onTabSelected(tab: RootComponent.Tab) {
+        _state.update { it.copy(selectedTab = tab) }
+    }
+
+    override fun onShowSwitcher() {
+        _state.update { it.copy(showSwitcher = true) }
+    }
+
+    override fun onHideSwitcher() {
+        _state.update { it.copy(showSwitcher = false) }
+    }
+
     private fun createChild(config: Config, context: ComponentContext): RootComponent.Child = when (config) {
-        Config.Home -> RootComponent.Child.HomeChild(DefaultHomeComponent(context))
+        Config.Home -> RootComponent.Child.HomeChild(
+            DefaultHomeComponent(
+                componentContext = context,
+                onShowDemoSwitcher = ::onShowSwitcher,
+            ),
+        )
     }
 
     @Serializable

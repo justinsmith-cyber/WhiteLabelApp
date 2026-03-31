@@ -1,3 +1,5 @@
 package com.velsol.feature.home
 
-interface HomeComponent
+interface HomeComponent {
+    fun onLogoTapped()
+}
