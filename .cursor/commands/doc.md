@@ -78,7 +78,7 @@ Reason: <why this doc matters>
 
 1. Full implementation  
 2. Call sites in `features/`, `sharedUI/`, `clients/` as relevant  
-3. Tests in `commonTest` or `brand-parity-tests` that encode invariants  
+3. Tests in `commonTest` that encode invariants  
 4. [AGENTS.md](../../AGENTS.md) and [.cursor/rules/](../../.cursor/rules/) when touching brand or navigation
 
 ---

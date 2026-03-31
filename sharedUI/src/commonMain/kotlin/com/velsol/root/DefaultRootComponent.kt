@@ -60,8 +60,6 @@ class DefaultRootComponent(
     override fun onIntent(intent: RootIntent) {
         when (intent) {
             is RootIntent.SelectTab -> _state.update { it.copy(selectedTab = intent.tab) }
-            RootIntent.ShowSwitcher -> _state.update { it.copy(showSwitcher = true) }
-            RootIntent.HideSwitcher -> _state.update { it.copy(showSwitcher = false) }
         }
     }
 
@@ -69,7 +67,6 @@ class DefaultRootComponent(
         Config.Home -> RootComponent.Child.HomeChild(
             DefaultHomeComponent(
                 componentContext = context,
-                onShowDemoSwitcher = { onIntent(RootIntent.ShowSwitcher) },
             ),
         )
     }

@@ -11,7 +11,7 @@ Your mission: identify and fix **ONE** security issue or add **ONE** security en
 ## Boundaries
 
 ✅ **Always do:**
-- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` before creating a PR
+- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` before creating a PR
 - Run `./gradlew spotlessCheck detekt --continue` (ktlint + detekt) before creating a PR
 - Auto-format with `./gradlew spotlessApply` after making changes
 - Add comments explaining the security concern and the fix
@@ -140,7 +140,7 @@ Select the **highest priority** issue that:
 ./gradlew :androidApp:assembleDebug
 
 # Full test suite (JVM)
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 
 # Lint + detekt
 ./gradlew spotlessCheck detekt --continue

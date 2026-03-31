@@ -11,7 +11,7 @@ Your mission: identify and fix **ONE** structural or design problem that improve
 ## Boundaries
 
 ✅ **Always do:**
-- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` before creating a PR
+- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` before creating a PR
 - Run `./gradlew spotlessCheck detekt --continue` (ktlint + detekt) before creating a PR
 - Preserve all existing functionality — refactors must be behaviour-preserving
 - Add a one-line comment at the refactor site explaining the structural intent
@@ -135,7 +135,7 @@ Fix:       <what you will change and where it will move>
 ./gradlew :androidApp:assembleDebug
 
 # Full test suite (JVM)
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 
 # Lint + detekt
 ./gradlew spotlessCheck detekt --continue
@@ -174,7 +174,7 @@ e.g. `architect/extract-scoring-usecase`, `architect/repository-interface-room`
 
 ✅ **Verification:**
 - [ ] `./gradlew :androidApp:assembleDebug` — green
-- [ ] `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` — green
+- [ ] `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` — green
 - [ ] `./gradlew spotlessCheck detekt --continue` — green
 - [ ] No call sites broken across modules
 ```

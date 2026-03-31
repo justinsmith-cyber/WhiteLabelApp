@@ -9,13 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 
 data class RootState(
     val selectedTab: RootComponent.Tab = RootComponent.Tab.Home,
-    val showSwitcher: Boolean = false,
 )
 
 sealed interface RootIntent {
     data class SelectTab(val tab: RootComponent.Tab) : RootIntent
-    data object ShowSwitcher : RootIntent
-    data object HideSwitcher : RootIntent
 }
 
 interface RootComponent {

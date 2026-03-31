@@ -14,8 +14,8 @@ Kotlin Multiplatform white-label demo: one **active client** per Gradle configur
 ./gradlew :androidApp:assembleRelease -Pclient=acme
 ./gradlew :desktopApp:run -Pclient=beta
 
-# JVM tests (contract + parity)
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+# JVM tests
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 
 # Formatting + static analysis (matches CI lint job)
 ./gradlew spotlessCheck detekt --continue
@@ -43,8 +43,6 @@ CI remains defined under [`.github/workflows/`](.github/workflows/) and expects 
 - **`features/*`** — Product areas; each exposes a Decompose component surface and composable content.
 - **`sharedUI`** — Root Decompose router, `AppGraph` (Metro), theming, `App` entry composable.
 - **`clients/*`** — One brand module per client; **exactly one** is linked into `sharedUI` for a given build (see `settings.gradle.kts` + `sharedUI` dependency on `:clients:{client}`).
-- **`demo-brands`** — Inline demo `BrandConfig` rows for the in-app switcher and tests; does **not** depend on `clients:*`.
-- **`brand-parity-tests`** — JVM tests: live client configs vs demo rows.
 - **Shells** — `androidApp`, `desktopApp`, `iosApp` (Xcode).
 
 For navigation stacks, network behavior, and file-level patterns, use [README.MD](README.MD) (Decompose, unified testing, network sections).

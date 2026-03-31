@@ -13,12 +13,10 @@ fun App(
     rootComponent: RootComponent,
     brandConfig: BrandConfig,
     modifier: Modifier = Modifier,
-    onBrandSelect: (BrandConfig) -> Unit = {},
     onThemeChange: @Composable (isDark: Boolean) -> Unit = {},
 ) = AppTheme(brandConfig = brandConfig, onThemeChange = onThemeChange) {
     RootContent(
         component = rootComponent,
-        onBrandSelect = onBrandSelect,
         modifier = modifier.fillMaxSize(),
     )
 }

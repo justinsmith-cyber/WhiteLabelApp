@@ -38,8 +38,6 @@ WhiteLabelApp/
 │   ├── acme/                       # Acme Field Services (red, HVAC certifications)
 │   ├── beta/                       # Beta Plumbing Co (blue, plumbing inventory)
 │   └── gamma/                      # Gamma Field Tech (green, all features enabled)
-├── demo-brands/                    # KMP library: all four demo BrandConfig rows (core:domain only)
-├── brand-parity-tests/             # JVM tests: live client BrandConfig vs demo list (same contract)
 ├── features/
 │   ├── home/                       # Home screen (always shown); hero card + feature tiles
 │   ├── certifications/             # HVAC certifications tracker; list + detail screens
@@ -48,8 +46,6 @@ WhiteLabelApp/
 │   └── src/
 │       ├── commonMain/kotlin/com/velsol/
 │       │   ├── App.kt              # Entry-point composable — accepts RootComponent + BrandConfig
-│       │   ├── demo/
-│       │   │   └── DemoClientSwitcher.kt # ModalBottomSheet switcher UI (configs from :demo-brands)
 │       │   ├── di/
 │       │   │   ├── AppGraph.kt         # Metro @DependencyGraph — collects client bindings at compile time
 │       │   │   └── AppGraphFactory.kt  # Instantiates AppGraph; exposes appBrandConfig()
@@ -58,7 +54,7 @@ WhiteLabelApp/
 │       │   │   ├── DefaultRootComponent.kt    # ChildStack (Home) + tab children (Certifications, Inventory)
 │       │   │   └── RootContent.kt             # Scaffold + NavigationBar + per-tab Children composable
 │       │   └── theme/              # AppTheme (brand-aware Material3 colors), LocalBrandConfig, LocalThemeIsDark
-│       └── iosMain/kotlin/Main.kt  # MainViewController — creates DefaultRootComponent; holds mutable BrandConfig state
+│       └── iosMain/kotlin/Main.kt  # MainViewController — creates DefaultRootComponent
 ├── androidApp/                     # Android application shell
 ├── desktopApp/                     # Desktop (JVM) application shell
 └── iosApp/                         # iOS application shell (Xcode)
@@ -74,8 +70,7 @@ The project uses a layered structure:
   - `core:network` — Ktor `HttpClient` factory (`createHttpClient()`).
 - **`features/`** — One module per product domain. Each exports a Decompose component hierarchy and `@Composable` content functions.
 - **`clients/`** — White-label layer; one module per client. Each implements `core:domain` interfaces and contributes its bindings to `AppScope` via Metro's `@ContributesBinding`. All client projects are included in the composite build; the **active** client on the `sharedUI` classpath is selected at configuration time via the `client` Gradle property (`-Pclient`).
-- **`demo-brands`** — Small KMP library holding `allDemoConfigs` (four inline `BrandConfig` implementations). Used by `sharedUI` for the runtime switcher and by `:brand-parity-tests`; it does **not** depend on any `clients:*` module.
-- **`sharedUI`** — Root Decompose router; holds `AppGraph` (Metro DI), `RootComponent`, and `RootContent`. Depends on `:demo-brands` and **one** `:clients:{client}` module. Also hosts the demo switcher UI (`demo/DemoClientSwitcher.kt`).
+- **`sharedUI`** — Root Decompose router; holds `AppGraph` (Metro DI), `RootComponent`, and `RootContent`. Depends on **one** `:clients:{client}` module.
 
 ---
 
@@ -107,7 +102,7 @@ Four clients ship in this repo:
 | `beta` | Beta Plumbing Co | Precision Plumbing Solutions | Blue `#1565C0` | Cyan `#00ACC1` | Purple `#6A1B9A` | `hasPlumbingInventory` |
 | `gamma` | Gamma Field Tech | Complete field operations platform | Green `#2E7D32` | Amber `#F9A825` | Teal `#00695C` | both flags |
 
-`settings.gradle.kts` includes **all** `:clients:*` projects so aggregate checks (for example `:brand-parity-tests`) can reference every `*BrandConfig` in one JVM test run. **`sharedUI` still resolves exactly one** client: it reads `-Pclient` at configuration time and adds `implementation(project(":clients:{client}"))`. iOS follows the same flag — the `SharedUI` framework is built with that client’s Metro binding baked in.
+`settings.gradle.kts` includes **all** `:clients:*` projects. **`sharedUI` resolves exactly one** client: it reads `-Pclient` at configuration time and adds `implementation(project(":clients:{client}"))`. iOS follows the same flag — the `SharedUI` framework is built with that client’s Metro binding baked in.
 
 ---
 
@@ -146,18 +141,17 @@ data class FeatureToggles(
 
 ---
 
-## Unified testing
+## Testing
 
 | Module | What it checks |
 |--------|------------------|
 | `:core:domain` | `commonTest`: contract of `sameBrandContentAs` (reflexive, symmetric, field-sensitive) and `FeatureToggles` defaults. |
-| `:sharedUI` | `commonTest`: `allDemoConfigs` size, unique names, each row matches expected inline `BrandConfig` via `sameBrandContentAs`. |
-| `:brand-parity-tests` | JVM `test`: `DefaultBrandConfig`, `AcmeBrandConfig`, `BetaBrandConfig`, `GammaBrandConfig` instances match the corresponding demo row from `:demo-brands`. |
+| `:sharedUI` | `commonTest`: root navigation and UI integration behavior. |
 
 Fast local run (JVM only):
 
 ```bash
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 ```
 
 ---
@@ -225,19 +219,6 @@ The `HttpClient` instance is created by `createHttpClient()` from `core:network`
 
 ---
 
-## Runtime Demo Switcher
-
-> Triple-tap the app name on the Home screen to open the switcher.
-
-The demo switcher lets stakeholders change the entire brand — colors, name, logo, feature tabs — without rebuilding. Brand rows live in **`demo-brands`** (only `core:domain`); the sheet UI lives in **`sharedUI/demo/`**.
-
-- `demo-brands/.../DemoBrandConfigs.kt` — `allDemoConfigs`: four self-contained inline `object` implementations of `BrandConfig`, one per client persona.
-- `sharedUI/.../demo/DemoClientSwitcher.kt` — `ModalBottomSheet` that lists all configs as tappable cards showing the brand name, tagline, and a three-dot color swatch.
-
-All three platform entry points (`AppActivity`, desktop `Main.kt`, iOS `MainViewController`) hold `var brandConfig by mutableStateOf(appBrandConfig())`. Selecting a config from the sheet calls `onBrandSelect(config)`, updating the state and triggering a full recomposition of `AppTheme`, including colors, logo, and which tabs are visible.
-
----
-
 ## Adding a New Client
 
 1. Register the module in `settings.gradle.kts`: add `include(":clients:{name}")` next to the other client includes.
@@ -289,9 +270,7 @@ class YourBrandConfig : BrandConfig {
 
 5. To add a new feature flag, extend `FeatureToggles` in `core:domain` and gate the UI behind `LocalBrandConfig.current.features.yourFlag`.
 
-6. To add the client to the runtime switcher, add an inline object to `demo-brands/src/commonMain/kotlin/com/velsol/demo/DemoBrandConfigs.kt` and append it to `allDemoConfigs`. Update `:brand-parity-tests` if you add parity coverage for the new client.
-
-7. To add the client to CI, append its name to the matrix in `.github/workflows/build-clients.yml`.
+6. To add the client to CI, append its name to the matrix in `.github/workflows/build-clients.yml`.
 
 > To override the `default` binding in tests or previews, use Metro's `replaces` parameter:
 > `@ContributesBinding(AppScope::class, replaces = [DefaultBrandConfig::class])`
@@ -363,12 +342,11 @@ buildkonfig {
     val clientId = providers.gradleProperty("client").getOrElse("default")
     defaultConfigs {
         buildConfigField(STRING, "CLIENT_ID", clientId)
-        buildConfigField(BOOLEAN, "IS_DEMO_MODE", "true")
     }
 }
 ```
 
-`com.velsol.BuildConfig.CLIENT_ID` and `IS_DEMO_MODE` are available anywhere in `sharedUI` at runtime. Use `IS_DEMO_MODE` to guard the demo switcher in production builds.
+`com.velsol.BuildConfig.CLIENT_ID` is available anywhere in `sharedUI` at runtime.
 
 ---
 
@@ -412,25 +390,6 @@ Each matrix job uploads its artifact under `{client}-android-apk`, `{client}-des
 **Root `build.gradle.kts`:** **Spotless** (not in the table above) formats Kotlin and `*.kts` build scripts with ktlint + compose-rules.
 
 To change SDK versions or add a universal Compose dependency, edit the relevant file in `build-logic/src/main/kotlin/` — the change propagates to every module automatically.
-
----
-
-## Demo Client Switcher
-
-The app includes a hidden demo mode for previewing different white-label brand configurations at runtime — no rebuild required.
-
-**To activate:** Triple-tap the app name on the Home screen to open the client switcher.
-
-| Client | Primary Color | Features Enabled |
-|---|---|---|
-| WhiteLabel App | Purple | (default, no extras) |
-| Acme Field Services | Red | HVAC Certifications |
-| Beta Plumbing Co | Blue | Plumbing Inventory |
-| Gamma Field Tech | Green | HVAC Certifications + Plumbing Inventory |
-
-Switching clients re-themes the entire app and adjusts navigation tabs based on each client's feature flags.
-
-To add a new demo client, add a new `BrandConfig` object in `demo-brands/src/commonMain/kotlin/com/velsol/demo/DemoBrandConfigs.kt` and include it in the `allDemoConfigs` list. Mirror the same fields in `sharedUI/src/commonTest/.../DemoBrandConfigsTest.kt` expected objects, and extend `BrandParityTest` when the real client module exists.
 
 ---
 

@@ -13,7 +13,7 @@ Your mission: understand the problem fully, reason about trade-offs, propose the
 ✅ **Always do:**
 - Read the relevant source files **before** writing any code
 - State your reasoning and trade-off analysis before implementing
-- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` before creating a PR
+- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` before creating a PR
 - Run `./gradlew spotlessCheck detekt --continue` (ktlint + detekt) before creating a PR
 - Follow existing patterns in `sharedUI/`, `features/`, and `core/domain/` — don't invent new architecture
 - Respect AGENTS.md (domain purity, single `AppGraph`, Decompose feature shape, `LocalBrandConfig`)
@@ -86,7 +86,7 @@ Before doing anything else, identify and read:
 **For logic / navigation tasks:**
 1. The `Default*` implementation for the feature — state transitions and side effects
 2. `core:domain` or `core:network` / `core:database` when the change crosses layers
-3. Tests under `**/src/commonTest/` and `brand-parity-tests` that cover the area
+3. Tests under `**/src/commonTest/` that cover the area
 
 **For dependency/build tasks:**
 1. `gradle/libs.versions.toml` — versions and catalogs
@@ -125,7 +125,7 @@ Follow project-specific rules:
 - New strings → owning module `composeResources` first, then `stringResource(Res.string.xxx)`
 
 **Testing rules:**
-- If changing `core:domain`, extend `commonTest` there; for `sharedUI`, use `sharedUI` tests; run `brand-parity-tests` when brand matrices change
+- If changing `core:domain`, extend `commonTest` there; for `sharedUI`, use `sharedUI` tests
 - Use `runTest` and coroutine test APIs for async code
 - Write tests spec-first when adding non-trivial behaviour
 
@@ -138,7 +138,7 @@ Follow project-specific rules:
 ./gradlew :androidApp:assembleDebug
 
 # Full JVM test suite
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 
 # Lint + detekt
 ./gradlew spotlessCheck detekt --continue
@@ -175,7 +175,7 @@ Create a PR via `jj git push` + `jj bookmark create` with:
 
 ### Testing
 - [x] `./gradlew :androidApp:assembleDebug` — green
-- [x] `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` — green
+- [x] `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` — green
 - [x] `./gradlew spotlessCheck detekt --continue` — green
 - [x] [Any manually tested scenario]
 

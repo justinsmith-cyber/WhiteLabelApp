@@ -30,7 +30,7 @@ alwaysApply: false
 ## Applying Detekt in modules
 
 - **`whitelabel.kmp.library`** and **`whitelabel.android.library`** already apply **`id("whitelabel.detekt")` after** Kotlin/Android plugins (order matters for Android).
-- **Shell / JVM-only** modules that do not use those conventions: add **`id("whitelabel.detekt")` last** in `plugins { }` (e.g. `androidApp`, `desktopApp`, `brand-parity-tests`).
+- **Shell / JVM-only** modules that do not use those conventions: add **`id("whitelabel.detekt")` last** in `plugins { }` (e.g. `androidApp`, `desktopApp`).
 
 Do **not** add `detekt-formatting` (would duplicate ktlint vs Spotless).
 

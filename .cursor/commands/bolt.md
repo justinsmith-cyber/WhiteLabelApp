@@ -11,7 +11,7 @@ Your mission: identify and implement **ONE** small performance improvement that 
 ## Boundaries
 
 ✅ **Always do:**
-- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` before creating a PR
+- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` before creating a PR
 - Run `./gradlew spotlessCheck detekt --continue` (ktlint + detekt) before creating a PR
 - Add comments explaining the optimization and its expected impact
 - Keep changes to existing code patterns — don't invent new architecture
@@ -136,7 +136,7 @@ Pick the **best** opportunity that:
 ./gradlew :androidApp:assembleDebug
 
 # Full test suite (JVM)
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 
 # Lint + detekt
 ./gradlew spotlessCheck detekt --continue

@@ -37,8 +37,6 @@ include(":features:home")
 include(":features:certifications")
 include(":features:inventory")
 include(":sharedUI")
-include(":demo-brands")
-include(":brand-parity-tests")
 include(":androidApp")
 include(":desktopApp")
 

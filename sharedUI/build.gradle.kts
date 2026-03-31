@@ -1,4 +1,3 @@
-import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -24,7 +23,6 @@ kotlin {
         commonMain.dependencies {
             api(project(":core:domain"))
             api(project(":core:theme"))
-            implementation(project(":demo-brands"))
             implementation(project(":clients:$client"))
             implementation(project(":core:database"))
             implementation(project(":core:network"))
@@ -65,6 +63,5 @@ buildkonfig {
     val clientId = providers.gradleProperty("client").getOrElse("default")
     defaultConfigs {
         buildConfigField(STRING, "CLIENT_ID", clientId)
-        buildConfigField(BOOLEAN, "IS_DEMO_MODE", "true")
     }
 }

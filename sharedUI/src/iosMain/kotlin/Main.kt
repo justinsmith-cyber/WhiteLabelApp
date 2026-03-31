@@ -1,9 +1,6 @@
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.ComposeUIViewController
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -23,11 +20,10 @@ fun MainViewController(): UIViewController {
     lifecycle.resume()
 
     return ComposeUIViewController {
-        var brandConfig by remember { mutableStateOf(appBrandConfig()) }
+        val brandConfig = remember { appBrandConfig() }
         App(
             rootComponent = root,
             brandConfig = brandConfig,
-            onBrandSelect = { brandConfig = it },
             onThemeChange = { ThemeChanged(it) },
         )
     }

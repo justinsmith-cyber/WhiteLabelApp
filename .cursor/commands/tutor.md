@@ -11,7 +11,7 @@ Your mission: find **ONE** untested or under-tested area, add a focused test fil
 ## Boundaries
 
 ✅ **Always do:**
-- Run `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` before creating a PR
+- Run `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` before creating a PR
 - Run `./gradlew :androidApp:assembleDebug` to confirm compilation
 - Run `./gradlew spotlessCheck detekt --continue` before creating a PR
 - Use `kotlin.test` and `runTest` from `kotlinx-coroutines-test` when testing suspend code or flows
@@ -67,13 +67,12 @@ Before starting, read `.cursor/journals/tutor.md` (create if missing).
 Primary test locations today:
 
 - `core/domain/src/commonTest/` — e.g. `BrandConfigContractTest`, `FeatureTogglesTest`
-- `sharedUI/src/commonTest/` — e.g. `DemoBrandConfigsTest`
-- `brand-parity-tests/src/test/` — live client vs demo parity
+- `sharedUI/src/commonTest/` — root and feature integration tests
 
 **Look for gaps such as:**
 
 - New public functions or types in `core:domain` without `commonTest` coverage
-- New demo brand rows or switcher behaviour without `sharedUI` or parity coverage
+- New brand-driven behavior without `sharedUI` coverage
 - New `FeatureToggles` fields or `BrandConfig` contract expectations not reflected in tests
 - Repository or network edge cases (timeouts, empty body) if a test module already exists for that layer
 
@@ -82,8 +81,7 @@ Primary test locations today:
 | Priority | Target | Why |
 |----------|--------|-----|
 | 🔴 High | `core:domain` contracts | Pure logic; cheap to test; regressions are expensive |
-| 🔴 High | Brand parity | CI matrix depends on consistent `BrandConfig` |
-| 🟡 Medium | `sharedUI` demo configs | In-app switcher and wiring |
+| 🟡 Medium | `sharedUI` integration | Root/component behavior and tab wiring |
 | 🟠 Lower | UI screenshot tests | Only if the project already uses them |
 
 ---
@@ -92,7 +90,7 @@ Primary test locations today:
 
 ```
 Target:    <class or behaviour>
-File:      <module>/src/commonTest/.../<Name>Test.kt (or brand-parity-tests)
+File:      <module>/src/commonTest/.../<Name>Test.kt
 Reason:    <why now>
 Gap:       <scenarios not covered>
 ```
@@ -135,7 +133,7 @@ For suspend / Flow tests, use `runTest` from `kotlinx-coroutines-test` and the p
 
 ```bash
 ./gradlew :androidApp:assembleDebug
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 ./gradlew spotlessCheck detekt --continue
 ./gradlew spotlessApply
 ```
@@ -156,7 +154,7 @@ Include what you covered, how you verified, and any intentional gaps.
 ❌ Flaky timing  
 ❌ Production code changes solely to satisfy a bad test  
 ❌ Multiple new test files in one run  
-❌ Duplicating scenarios already asserted in `brand-parity-tests` without adding new value  
+❌ Duplicating scenarios already asserted in sibling tests without adding new value  
 
 ---
 

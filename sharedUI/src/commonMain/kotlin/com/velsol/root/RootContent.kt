@@ -30,8 +30,6 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.velsol.core.domain.brand.BrandConfig
-import com.velsol.demo.DemoClientSwitcher
 import com.velsol.feature.certifications.CertificationDetailContent
 import com.velsol.feature.certifications.CertificationsComponent
 import com.velsol.feature.certifications.CertificationsContent
@@ -60,7 +58,6 @@ private fun tabAssets(tab: RootComponent.Tab): Pair<String, DrawableResource> = 
 @Composable
 fun RootContent(
     component: RootComponent,
-    onBrandSelect: (BrandConfig) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val stack by component.stack.subscribeAsState()
@@ -71,7 +68,6 @@ fun RootContent(
 
     val state by component.state.collectAsState()
     val selectedTab = state.selectedTab
-    val showSwitcher = state.showSwitcher
 
     val visibleTabs = component.visibleTabs
     val showNavigation = visibleTabs.size > 1
@@ -115,15 +111,6 @@ fun RootContent(
         }
     }
 
-    if (showSwitcher) {
-        DemoClientSwitcher(
-            onDismiss = { component.onIntent(RootIntent.HideSwitcher) },
-            onBrandSelect = { config ->
-                onBrandSelect(config)
-                component.onIntent(RootIntent.SelectTab(RootComponent.Tab.Home))
-            },
-        )
-    }
 }
 
 @Composable
@@ -212,7 +199,6 @@ private fun RootTabScenes(
         ) { child ->
             when (val instance = child.instance) {
                 is RootComponent.Child.HomeChild -> HomeContent(
-                    component = instance.component,
                     isDark = isDark,
                     onToggleDarkMode = onToggleDarkMode,
                     onOpenGithub = onOpenGithub,

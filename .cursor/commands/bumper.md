@@ -13,7 +13,7 @@ Your mission: find **ONE** outdated dependency in `gradle/libs.versions.toml`, u
 ✅ **Always do:**
 - Read `gradle/libs.versions.toml` in full before making any changes
 - Check the Compose Multiplatform compatibility table before touching the `kotlin` version
-- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` after every version bump
+- Run `./gradlew :androidApp:assembleDebug` and `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` after every version bump
 - Run `./gradlew spotlessCheck detekt --continue` (ktlint + detekt) before creating a PR
 - Pin to the latest **stable** release — never use `-SNAPSHOT`, `-alpha`, `-beta`, or `-rc` unless explicitly instructed
 
@@ -141,7 +141,7 @@ Double-check that no adjacent entries were accidentally changed.
 ./gradlew :androidApp:assembleDebug
 
 # Full JVM test suite
-./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test
+./gradlew :core:domain:jvmTest :sharedUI:jvmTest
 
 # Lint + detekt
 ./gradlew spotlessCheck detekt --continue
@@ -184,7 +184,7 @@ e.g. `bumper/ktor-3.1.2`
 
 ### Verification
 - [x] `./gradlew :androidApp:assembleDebug` — green
-- [x] `./gradlew :core:domain:jvmTest :sharedUI:jvmTest :brand-parity-tests:test` — green
+- [x] `./gradlew :core:domain:jvmTest :sharedUI:jvmTest` — green
 - [x] `./gradlew spotlessCheck detekt --continue` — green
 ```
 

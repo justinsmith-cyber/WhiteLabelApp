@@ -1,7 +1,4 @@
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -60,7 +57,7 @@ fun main() {
     lifecycle.resume()
 
     application {
-        var brandConfig by remember { mutableStateOf(appBrandConfig()) }
+        val brandConfig = remember { appBrandConfig() }
         val initialSize = remember { initialWindowDpSize() }
         Window(
             title = brandConfig.appName,
@@ -79,7 +76,6 @@ fun main() {
             App(
                 rootComponent = root,
                 brandConfig = brandConfig,
-                onBrandSelect = { brandConfig = it },
             )
         }
     }

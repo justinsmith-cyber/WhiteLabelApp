@@ -2,7 +2,6 @@ package com.velsol.feature.home
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,11 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
@@ -75,7 +71,6 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun HomeContent(
-    component: HomeComponent,
     isDark: Boolean,
     onToggleDarkMode: () -> Unit,
     onOpenGithub: () -> Unit,
@@ -104,7 +99,6 @@ fun HomeContent(
                 primary = primary,
                 onPrimary = onPrimary,
                 secondary = secondary,
-                onLogoTap = { component.onIntent(HomeIntent.LogoTapped) },
             )
         }
         item {
@@ -141,7 +135,6 @@ private fun HeroBrandCard(
     primary: Color,
     onPrimary: Color,
     secondary: Color,
-    onLogoTap: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -188,9 +181,6 @@ private fun HeroBrandCard(
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 42.sp,
-                modifier = Modifier
-                    .pointerHoverIcon(PointerIcon.Hand)
-                    .clickable(role = Role.Button) { onLogoTap() },
             )
             Spacer(Modifier.height(6.dp))
             Text(

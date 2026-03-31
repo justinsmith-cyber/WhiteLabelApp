@@ -7,10 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowInsetsControllerCompat
 import com.arkivanov.decompose.defaultComponentContext
@@ -26,11 +23,10 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var brandConfig by remember { mutableStateOf(appBrandConfig()) }
+            val brandConfig = remember { appBrandConfig() }
             App(
                 rootComponent = root,
                 brandConfig = brandConfig,
-                onBrandSelect = { brandConfig = it },
                 onThemeChange = { ThemeChanged(it) },
             )
         }
