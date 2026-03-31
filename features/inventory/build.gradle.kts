@@ -5,6 +5,10 @@ plugins {
 
 android { namespace = "com.velsol.feature.inventory" }
 
+compose.resources {
+    packageOfResClass = "com.velsol.feature.inventory.generated.resources"
+}
+
 kotlin {
     sourceSets {
         commonMain.dependencies {

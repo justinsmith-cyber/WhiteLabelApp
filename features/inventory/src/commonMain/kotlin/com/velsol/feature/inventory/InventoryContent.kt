@@ -27,7 +27,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.velsol.feature.inventory.generated.resources.Res
+import com.velsol.feature.inventory.generated.resources.in_stock
+import com.velsol.feature.inventory.generated.resources.in_stock_count
+import com.velsol.feature.inventory.generated.resources.items_tracked
+import com.velsol.feature.inventory.generated.resources.low_stock
+import com.velsol.feature.inventory.generated.resources.low_stock_count
+import com.velsol.feature.inventory.generated.resources.out_of_stock
+import com.velsol.feature.inventory.generated.resources.parts_materials
+import com.velsol.feature.inventory.generated.resources.plumbing_inventory
+import com.velsol.feature.inventory.generated.resources.quantity_unit
+import com.velsol.feature.inventory.generated.resources.sku_label
+import com.velsol.feature.inventory.generated.resources.stock_levels
 import com.velsol.theme.LocalBrandConfig
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun InventoryContent(
@@ -53,33 +66,33 @@ fun InventoryContent(
             ) {
                 Column(Modifier.padding(24.dp)) {
                     Text(
-                        text = "PLUMBING INVENTORY",
+                        text = stringResource(Res.string.plumbing_inventory),
                         color = onPrimary.copy(alpha = 0.65f),
                         style = MaterialTheme.typography.labelSmall,
                         letterSpacing = 2.sp,
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Parts & Materials",
+                        text = stringResource(Res.string.parts_materials),
                         color = onPrimary,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "${state.items.size} items tracked",
+                        text = stringResource(Res.string.items_tracked, state.items.size),
                         color = onPrimary.copy(alpha = 0.82f),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(16.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatBadge(
-                            label = "${state.inStockCount} In Stock",
+                            label = stringResource(Res.string.in_stock_count, state.inStockCount),
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
                         StatBadge(
-                            label = "${state.lowCount} Low Stock",
+                            label = stringResource(Res.string.low_stock_count, state.lowCount),
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
@@ -90,7 +103,7 @@ fun InventoryContent(
 
         item {
             Text(
-                text = "Stock Levels",
+                text = stringResource(Res.string.stock_levels),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 4.dp),
@@ -128,10 +141,15 @@ private fun InventoryCard(
     secondary: Color,
     onClick: () -> Unit,
 ) {
-    val (statusColor, statusLabel) = when (item.stockLevel) {
-        StockLevel.InStock -> secondary to "In Stock"
-        StockLevel.LowStock -> Color(0xFFF59E0B) to "Low Stock"
-        StockLevel.OutOfStock -> MaterialTheme.colorScheme.error to "Out of Stock"
+    val statusLabel = when (item.stockLevel) {
+        StockLevel.InStock -> stringResource(Res.string.in_stock)
+        StockLevel.LowStock -> stringResource(Res.string.low_stock)
+        StockLevel.OutOfStock -> stringResource(Res.string.out_of_stock)
+    }
+    val statusColor = when (item.stockLevel) {
+        StockLevel.InStock -> secondary
+        StockLevel.LowStock -> Color(0xFFF59E0B)
+        StockLevel.OutOfStock -> MaterialTheme.colorScheme.error
     }
 
     Card(
@@ -179,12 +197,12 @@ private fun InventoryCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "SKU: ${item.sku}",
+                    text = stringResource(Res.string.sku_label, item.sku),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = "${item.quantity} ${item.unit}",
+                    text = stringResource(Res.string.quantity_unit, item.quantity, item.unit),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = if (item.stockLevel == StockLevel.OutOfStock) {

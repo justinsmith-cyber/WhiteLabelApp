@@ -1,0 +1,13 @@
+<resources>
+    <string name="plumbing_inventory">PLUMBING INVENTORY</string>
+    <string name="parts_materials">Parts &amp; Materials</string>
+    <string name="items_tracked">%1$d items tracked</string>
+    <string name="in_stock_count">%1$d In Stock</string>
+    <string name="low_stock_count">%1$d Low Stock</string>
+    <string name="stock_levels">Stock Levels</string>
+    <string name="in_stock">In Stock</string>
+    <string name="low_stock">Low Stock</string>
+    <string name="out_of_stock">Out of Stock</string>
+    <string name="sku_label">SKU: %1$s</string>
+    <string name="quantity_unit">%1$d %2$s</string>
+</resources>
