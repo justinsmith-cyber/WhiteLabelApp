@@ -30,7 +30,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.velsol.feature.certifications.generated.resources.Res
+import com.velsol.feature.certifications.generated.resources.active_count_label
+import com.velsol.feature.certifications.generated.resources.active_total_summary
+import com.velsol.feature.certifications.generated.resources.all_certifications
+import com.velsol.feature.certifications.generated.resources.expiring_count_label
+import com.velsol.feature.certifications.generated.resources.expires_label
+import com.velsol.feature.certifications.generated.resources.hvac_certifications
+import com.velsol.feature.certifications.generated.resources.team_credentials
 import com.velsol.theme.LocalBrandConfig
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CertificationsContent(
@@ -86,33 +95,33 @@ private fun CertificationsListContent(
             ) {
                 Column(Modifier.padding(24.dp)) {
                     Text(
-                        text = "HVAC CERTIFICATIONS",
+                        text = stringResource(Res.string.hvac_certifications),
                         color = onPrimary.copy(alpha = 0.65f),
                         style = MaterialTheme.typography.labelSmall,
                         letterSpacing = 2.sp,
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Team Credentials",
+                        text = stringResource(Res.string.team_credentials),
                         color = onPrimary,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "${state.activeCount} active · ${state.certs.size} total",
+                        text = stringResource(Res.string.active_total_summary, state.activeCount, state.certs.size),
                         color = onPrimary.copy(alpha = 0.82f),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(16.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatChip(
-                            label = "${state.activeCount} Active",
+                            label = stringResource(Res.string.active_count_label, state.activeCount),
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
                         StatChip(
-                            label = "${state.expiringCount} Expiring",
+                            label = stringResource(Res.string.expiring_count_label, state.expiringCount),
                             containerColor = onPrimary.copy(alpha = 0.18f),
                             contentColor = onPrimary,
                         )
@@ -123,7 +132,7 @@ private fun CertificationsListContent(
 
         item {
             Text(
-                text = "All Certifications",
+                text = stringResource(Res.string.all_certifications),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 4.dp),
@@ -198,7 +207,7 @@ private fun CertificationCard(cert: CertRecord, secondary: Color, onClick: () ->
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Text(
-                text = "Expires ${cert.expires}",
+                text = stringResource(Res.string.expires_label, cert.expires),
                 style = MaterialTheme.typography.labelSmall,
                 color = if (cert.status == CertStatus.Expired) {
                     MaterialTheme.colorScheme.error

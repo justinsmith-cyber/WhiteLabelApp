@@ -5,6 +5,10 @@ plugins {
 
 android { namespace = "com.velsol.feature.certifications" }
 
+compose.resources {
+    packageOfResClass = "com.velsol.feature.certifications.generated.resources"
+}
+
 kotlin {
     sourceSets {
         commonMain.dependencies {

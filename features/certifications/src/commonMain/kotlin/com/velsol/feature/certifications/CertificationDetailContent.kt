@@ -32,7 +32,16 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.velsol.feature.certifications.generated.resources.Res
+import com.velsol.feature.certifications.generated.resources.back_arrow
+import com.velsol.feature.certifications.generated.resources.certification_detail
+import com.velsol.feature.certifications.generated.resources.expiry_date
+import com.velsol.feature.certifications.generated.resources.hvac_certification
+import com.velsol.feature.certifications.generated.resources.navigate_back
+import com.velsol.feature.certifications.generated.resources.status
+import com.velsol.feature.certifications.generated.resources.technician
 import com.velsol.theme.LocalBrandConfig
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CertificationDetailContent(
@@ -65,20 +74,21 @@ fun CertificationDetailContent(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
+                    val navigateBackDesc = stringResource(Res.string.navigate_back)
                     IconButton(
                         onClick = { component.onIntent(CertDetailIntent.Back) },
                         modifier = Modifier.clearAndSetSemantics {
-                            contentDescription = "Navigate back"
+                            contentDescription = navigateBackDesc
                         },
                     ) {
                         Text(
-                            text = "←",
+                            text = stringResource(Res.string.back_arrow),
                             style = MaterialTheme.typography.titleLarge,
                             color = primary,
                         )
                     }
                     Text(
-                        text = "Certification Detail",
+                        text = stringResource(Res.string.certification_detail),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -91,7 +101,7 @@ fun CertificationDetailContent(
                 ) {
                     Column(Modifier.padding(24.dp)) {
                         Text(
-                            text = "HVAC CERTIFICATION",
+                            text = stringResource(Res.string.hvac_certification),
                             color = onPrimary.copy(alpha = 0.65f),
                             style = MaterialTheme.typography.labelSmall,
                             letterSpacing = 2.sp,
@@ -127,12 +137,12 @@ fun CertificationDetailContent(
                         modifier = Modifier.padding(20.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        DetailRow(label = "Technician", value = cert.technician)
+                        DetailRow(label = stringResource(Res.string.technician), value = cert.technician)
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                        DetailRow(label = "Expiry Date", value = cert.expires)
+                        DetailRow(label = stringResource(Res.string.expiry_date), value = cert.expires)
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         DetailRow(
-                            label = "Status",
+                            label = stringResource(Res.string.status),
                             value = statusLabel,
                             valueColor = statusColor,
                         )

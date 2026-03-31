@@ -1,0 +1,16 @@
+<resources>
+    <string name="navigate_back">Navigate back</string>
+    <string name="back_arrow">←</string>
+    <string name="certification_detail">Certification Detail</string>
+    <string name="hvac_certification">HVAC CERTIFICATION</string>
+    <string name="technician">Technician</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="status">Status</string>
+    <string name="hvac_certifications">HVAC CERTIFICATIONS</string>
+    <string name="team_credentials">Team Credentials</string>
+    <string name="active_total_summary">%1$d active · %2$d total</string>
+    <string name="active_count_label">%1$d Active</string>
+    <string name="expiring_count_label">%1$d Expiring</string>
+    <string name="all_certifications">All Certifications</string>
+    <string name="expires_label">Expires %1$s</string>
+</resources>
