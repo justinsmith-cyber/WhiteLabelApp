@@ -128,7 +128,8 @@ private fun CertificationsListContent(
             )
         }
 
-        items(state.certs) { cert ->
+        // Stable key by cert name prevents full list rebind when items are added, removed, or reordered.
+        items(items = state.certs, key = { it.name }) { cert ->
             CertificationCard(
                 cert = cert,
                 secondary = secondary,

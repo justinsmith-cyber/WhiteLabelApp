@@ -97,7 +97,8 @@ fun InventoryContent(
             )
         }
 
-        items(state.items) { item ->
+        // Stable key by SKU prevents full list rebind when items are added, removed, or reordered.
+        items(items = state.items, key = { it.sku }) { item ->
             InventoryCard(
                 item = item,
                 primary = primary,
