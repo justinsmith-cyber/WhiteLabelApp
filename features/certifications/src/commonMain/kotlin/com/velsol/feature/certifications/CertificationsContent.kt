@@ -28,6 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +40,7 @@ import com.velsol.feature.certifications.generated.resources.all_certifications
 import com.velsol.feature.certifications.generated.resources.expiring_count_label
 import com.velsol.feature.certifications.generated.resources.expires_label
 import com.velsol.feature.certifications.generated.resources.hvac_certifications
+import com.velsol.feature.certifications.generated.resources.loading_certifications
 import com.velsol.feature.certifications.generated.resources.team_credentials
 import com.velsol.theme.LocalBrandConfig
 import org.jetbrains.compose.resources.stringResource
@@ -61,8 +64,15 @@ fun CertificationsContent(
     Crossfade(targetState = state, modifier = modifier) { currentState ->
         when (currentState) {
             is CertListState.Loading -> {
+                val loadingCertificationsDescription =
+                    stringResource(Res.string.loading_certifications)
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = primary)
+                    CircularProgressIndicator(
+                        color = primary,
+                        modifier = Modifier.semantics {
+                            contentDescription = loadingCertificationsDescription
+                        },
+                    )
                 }
             }
 

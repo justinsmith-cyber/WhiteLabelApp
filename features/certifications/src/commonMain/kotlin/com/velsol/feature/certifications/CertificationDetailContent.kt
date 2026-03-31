@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +38,7 @@ import com.velsol.feature.certifications.generated.resources.back_arrow
 import com.velsol.feature.certifications.generated.resources.certification_detail
 import com.velsol.feature.certifications.generated.resources.expiry_date
 import com.velsol.feature.certifications.generated.resources.hvac_certification
+import com.velsol.feature.certifications.generated.resources.loading_certifications
 import com.velsol.feature.certifications.generated.resources.navigate_back
 import com.velsol.feature.certifications.generated.resources.status
 import com.velsol.feature.certifications.generated.resources.technician
@@ -57,8 +59,15 @@ fun CertificationDetailContent(
 
     Crossfade(targetState = state.cert, modifier = modifier) { cert ->
         if (cert == null) {
+            val loadingCertificationsDescription =
+                stringResource(Res.string.loading_certifications)
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = primary)
+                CircularProgressIndicator(
+                    color = primary,
+                    modifier = Modifier.semantics {
+                        contentDescription = loadingCertificationsDescription
+                    },
+                )
             }
         } else {
             val (statusLabel, statusColor) =

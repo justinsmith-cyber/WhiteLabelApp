@@ -1,6 +1,7 @@
 <resources>
     <string name="navigate_back">Navigate back</string>
     <string name="back_arrow">←</string>
+    <string name="loading_certifications">Loading certifications</string>
     <string name="certification_detail">Certification Detail</string>
     <string name="hvac_certification">HVAC CERTIFICATION</string>
     <string name="technician">Technician</string>
