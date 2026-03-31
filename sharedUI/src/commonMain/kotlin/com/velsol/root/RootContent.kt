@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
@@ -52,7 +51,8 @@ fun RootContent(
     component: RootComponent,
     modifier: Modifier = Modifier,
 ) {
-    var isDark by LocalThemeIsDark.current
+    val themeState = LocalThemeIsDark.current
+    val isDark by themeState
     val uriHandler = LocalUriHandler.current
     val brandConfig = LocalBrandConfig.current
     val primary = Color(brandConfig.primaryColorArgb)
@@ -60,7 +60,9 @@ fun RootContent(
     val onSelectTab = remember(component) {
         { tab: RootComponent.Tab -> component.onIntent(RootIntent.SelectTab(tab)) }
     }
-
+    // Keep root-level callbacks stable so active tab content can be skipped during layout-only recompositions.
+    val onToggleDarkMode = remember(themeState) { { themeState.value = !themeState.value } }
+    val onOpenGithub = remember(uriHandler) { { uriHandler.openUri("https://github.com/terrakok") } }
     val state by component.state.collectAsState()
     val selectedTab = state.selectedTab
 
@@ -97,8 +99,8 @@ fun RootContent(
                     selectedTab = selectedTab,
                     component = component,
                     isDark = isDark,
-                    onToggleDarkMode = { isDark = !isDark },
-                    onOpenGithub = { uriHandler.openUri("https://github.com/terrakok") },
+                    onToggleDarkMode = onToggleDarkMode,
+                    onOpenGithub = onOpenGithub,
                     modifier = Modifier.padding(innerPadding),
                 )
             }
