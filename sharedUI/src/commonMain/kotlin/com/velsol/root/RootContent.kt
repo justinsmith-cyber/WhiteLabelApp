@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,6 +66,10 @@ fun RootContent(
     val uriHandler = LocalUriHandler.current
     val brandConfig = LocalBrandConfig.current
     val primary = Color(brandConfig.primaryColorArgb)
+    // Keep a stable callback reference so nav items can skip unnecessary recomposition work.
+    val onSelectTab = remember(component) {
+        { tab: RootComponent.Tab -> component.onIntent(RootIntent.SelectTab(tab)) }
+    }
 
     val state by component.state.collectAsState()
     val selectedTab = state.selectedTab
@@ -78,7 +83,7 @@ fun RootContent(
             if (useSideNavigation) {
                 AppNavigationRail(
                     selectedTab = selectedTab,
-                    onSelectTab = { component.onIntent(RootIntent.SelectTab(it)) },
+                    onSelectTab = onSelectTab,
                     visibleTabs = visibleTabs,
                     primary = primary,
                     modifier = Modifier.fillMaxHeight(),
@@ -91,7 +96,7 @@ fun RootContent(
                     if (showNavigation && !useSideNavigation) {
                         AppNavigationBar(
                             selectedTab = selectedTab,
-                            onSelectTab = { component.onIntent(RootIntent.SelectTab(it)) },
+                            onSelectTab = onSelectTab,
                             visibleTabs = visibleTabs,
                             primary = primary,
                         )
@@ -128,9 +133,10 @@ private fun AppNavigationBar(
     NavigationBar {
         for (tab in visibleTabs) {
             val (label, icon) = tabAssets(tab)
+            val onTabClick = remember(tab, onSelectTab) { { onSelectTab(tab) } }
             NavigationBarItem(
                 selected = selectedTab == tab,
-                onClick = { onSelectTab(tab) },
+                onClick = onTabClick,
                 icon = {
                     TabIcon(
                         iconRes = icon,
@@ -164,9 +170,10 @@ private fun AppNavigationRail(
     ) {
         for (tab in visibleTabs) {
             val (label, icon) = tabAssets(tab)
+            val onTabClick = remember(tab, onSelectTab) { { onSelectTab(tab) } }
             NavigationRailItem(
                 selected = selectedTab == tab,
-                onClick = { onSelectTab(tab) },
+                onClick = onTabClick,
                 icon = {
                     TabIcon(
                         iconRes = icon,
