@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
@@ -30,6 +29,7 @@ class DefaultMessagesListComponent(
 
     private val _selectedTab = MutableStateFlow(MessagesTab.Incoming)
     private val _searchQuery = MutableStateFlow("")
+    private val searchMessages = SearchMessagesUseCase()
 
     private val _state = MutableStateFlow(
         MessagesListState(
@@ -51,15 +51,7 @@ class DefaultMessagesListComponent(
                 .flatMapLatest { tab -> repository.getMessages(tab.toMessageType()) }
                 .combine(_searchQuery) { messages, query -> messages to query }
                 .collect { (messages, query) ->
-                    val filtered = if (query.isBlank()) {
-                        messages
-                    } else {
-                        messages.filter { msg ->
-                            msg.subject.contains(query, ignoreCase = true) ||
-                                msg.sender.displayName.contains(query, ignoreCase = true) ||
-                                msg.recipient.name.contains(query, ignoreCase = true)
-                        }
-                    }
+                    val filtered = searchMessages(messages, query)
                     _state.update {
                         it.copy(
                             selectedTab = _selectedTab.value,
