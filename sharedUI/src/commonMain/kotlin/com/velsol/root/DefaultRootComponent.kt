@@ -11,7 +11,6 @@ import com.velsol.feature.inventory.DefaultInventoryComponent
 import com.velsol.feature.inventory.InventoryComponent
 import com.velsol.feature.login.DefaultLoginComponent
 import com.velsol.feature.login.LoginComponent
-import com.velsol.feature.login.MockSupportRepository
 import com.velsol.feature.messages.DefaultMessagesComponent
 import com.velsol.feature.messages.MessagesComponent
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +40,8 @@ class DefaultRootComponent(
         DefaultLoginComponent(
             componentContext = childContext("login"),
             authRepository = graph.authRepository,
-            supportRepository = MockSupportRepository(brandConfig),
+            // Structural intent: AppGraph supplies all repository dependencies; no direct instantiation here.
+            supportRepository = graph.supportRepository,
             onLoginSuccessCallback = { onIntent(RootIntent.LoginSuccess) },
         )
     }

@@ -9,6 +9,8 @@ import com.velsol.feature.inventory.InventoryRepository
 import com.velsol.feature.inventory.createInventoryRepository
 import com.velsol.feature.login.AuthRepository
 import com.velsol.feature.login.MockAuthRepository
+import com.velsol.feature.login.MockSupportRepository
+import com.velsol.feature.login.SupportRepository
 import com.velsol.feature.messages.MessagesRepository
 import com.velsol.feature.messages.MockMessagesRepository
 import dev.zacsweers.metro.DependencyGraph
@@ -22,6 +24,7 @@ interface AppGraph {
     val certificationsRepository: CertificationsRepository
     val inventoryRepository: InventoryRepository
     val authRepository: AuthRepository
+    val supportRepository: SupportRepository
     val messagesRepository: MessagesRepository
 
     @Provides
@@ -36,6 +39,9 @@ interface AppGraph {
 
     @Provides
     fun provideAuthRepository(): AuthRepository = MockAuthRepository()
+
+    @Provides
+    fun provideSupportRepository(brandConfig: BrandConfig): SupportRepository = MockSupportRepository(brandConfig)
 
     @Provides
     fun provideMessagesRepository(): MessagesRepository = MockMessagesRepository()
